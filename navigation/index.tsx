@@ -10,7 +10,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
 import { Fragment } from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
-
+import * as ImagePicker from 'expo-image-picker';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import CameraScreen from '../screens/CameraScreen';
@@ -37,6 +37,22 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
  * https://reactnavigation.org/docs/modal
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const openImagePickerAsync = async () => {
+  let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+  if (permissionResult.granted === false) {
+    alert('Permission to access camera roll is required!');
+    return;
+  }
+
+  let pickerResult = await ImagePicker.launchImageLibraryAsync();
+
+  if (pickerResult.cancelled === true) {
+    return;
+  }
+  return pickerResult.uri;
+};
 
 function RootNavigator() {
   const colorScheme = useColorScheme();
