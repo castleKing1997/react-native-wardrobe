@@ -11,7 +11,6 @@ const getDressData = async () => {
     const matchedKey = Storage.matchKey(keys, "@DRESS_*");
     const dressData = await Storage.getMultiple(matchedKey);
     dressData?.forEach(element => {
-      // console.log("TabTowScreen.getDressData", element);
       if(element[1]) {
         items.push(JSON.parse(element[1]));
       }
@@ -22,14 +21,6 @@ const getDressData = async () => {
   return items;
 };
 
-// const writeDressData = async (data) => {
-//   try {
-//     const convertedData = Storage.convertData(data, "DRESS", "key");
-//     await Storage.multiSet(convertedData);
-//   } catch(e) {
-//     console.log(e);
-//   }
-// }
 
 const valuesReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -52,31 +43,6 @@ const valuesReducer = (state: any, action: any) => {
       isLoading: false,
       isError: true,
     };
-  case 'REMOVE_VALUE':
-    return {
-      ...state,
-    };
-  case 'UPDATE_VALUE':
-    return {
-      ...state,
-    }
-  case 'UPDATE_VALUE_SUCCESS':
-    return {
-      ...state,
-      isUpdating: false,
-      isError: false,
-    };
-  case 'UPDATE_VALUE_INIT':
-    return {
-      ...state,
-      isUpdating: true,
-    };
-  case 'UPDATE_VALUE_FAILURE':
-    return {
-      ...state,
-      isUpdating: false,
-      isError: true,
-    };
   default:
     throw new Error();
   }
@@ -89,7 +55,6 @@ export default function WardrobeScreen(props: any) {
   );
 
   const readItemsFromStorage = async () => {
-    // console.log("WardrobeScreen.readItemsFromStorage")
     dispatchValues({ type: 'VALUES_FETCH_INIT' });
     try {
       let items = await getDressData();
@@ -113,30 +78,21 @@ export default function WardrobeScreen(props: any) {
   }
 
   const writeItemToStorage = async (item: any) => {
-    // dispatchValues({ type: 'UPDATE_VALUE_INIT' });
-    // console.log("WardrobeScreen.writeItemToStorage",item)
     try {
       const id = "@DRESS_"+item.id;
       await Storage.setObjectValue(id, item);
       readItemsFromStorage();
-      // dispatchValues({
-      //   type: 'UPDATE_VALUE_SUCCESS',
-      // });
     } catch(e) {
       console.log("WardrobeScreen.writeItemToStorage", e);
-      dispatchValues({ type: 'UPDATE_VALUE_FAILURE' })
     }
   };
 
   useEffect(() => {
     readItemsFromStorage();
     Storage.updateData = () => readItemsFromStorage();
-    // console.log("WardrobeScreen.init", props);
-    // console.log(props.navigate.route.params)
   }, []);
 
   const handleLeftBtnPress = (item: any) => {
-    // console.log("WardrobeScreen.handleLeftBtnPress", item);
     item.date = new Date().getTime();
     writeItemToStorage(item);
   }
@@ -146,7 +102,6 @@ export default function WardrobeScreen(props: any) {
     removeItemFromStorage(key);
   }
   
-  // console.log("WardrobeSceen", values);
   return (
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
