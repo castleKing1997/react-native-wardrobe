@@ -1,11 +1,8 @@
-import { BackHandler, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import Card from '../components/Card';
-import { useAsyncStorage } from '@react-native-async-storage/async-storage';
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
-import { Text, View } from '../components/Themed';
+import React, { useEffect, useReducer} from 'react';
+import { View } from '../components/Themed';
 import Storage from '../manage/Storage';
-import { useFocusEffect } from '@react-navigation/native';
-import Navigation from '../navigation';
 
 const getDressData = async () => {
   const items: any[] = []
@@ -20,7 +17,7 @@ const getDressData = async () => {
       }
     });
   } catch(e) {
-    console.log("TabTwoSceen.getDressData", e);
+    console.log("WardrobeSceen.getDressData", e);
   }
   return items;
 };
@@ -58,9 +55,6 @@ const valuesReducer = (state: any, action: any) => {
   case 'REMOVE_VALUE':
     return {
       ...state,
-      data: state.data.filter(
-        (      value: { key: any; }) => action.payload.key !== value.key
-      ),
     };
   case 'UPDATE_VALUE':
     return {
@@ -88,14 +82,14 @@ const valuesReducer = (state: any, action: any) => {
   }
 };
 
-export default function TabTwoScreen(props: any) {
+export default function WardrobeScreen(props: any) {
   const [values, dispatchValues] = useReducer(
     valuesReducer,
     { data: [], isLoading: false, isError: false, isUpdating: false}
   );
 
   const readItemsFromStorage = async () => {
-    console.log("TabTwoScreen.readItemsFromStorage")
+    // console.log("WardrobeScreen.readItemsFromStorage")
     dispatchValues({ type: 'VALUES_FETCH_INIT' });
     try {
       let items = await getDressData();
@@ -104,14 +98,23 @@ export default function TabTwoScreen(props: any) {
         payload: items,
       });
     } catch(e) {
-      console.log("TabTwoScreen.readItemsFromStorage", e);
+      console.log("WardrobeScreen.readItemsFromStorage", e);
       dispatchValues({ type: 'VALUES_FETCH_FAILURE' })
     }
   };
 
+  const removeItemFromStorage = async (key: string) => {
+    try {
+      await Storage.removeMyObject(key);
+      readItemsFromStorage();
+    } catch (e) {
+      console.log("WardrobeScreen.removeItemFromStorage", e);
+    }
+  }
+
   const writeItemToStorage = async (item: any) => {
     // dispatchValues({ type: 'UPDATE_VALUE_INIT' });
-    console.log("TabTwoScreen.writeItemToStorage",item)
+    // console.log("WardrobeScreen.writeItemToStorage",item)
     try {
       const id = "@DRESS_"+item.id;
       await Storage.setObjectValue(id, item);
@@ -120,7 +123,7 @@ export default function TabTwoScreen(props: any) {
       //   type: 'UPDATE_VALUE_SUCCESS',
       // });
     } catch(e) {
-      console.log("TabTwoScreen.writeItemToStorage", e);
+      console.log("WardrobeScreen.writeItemToStorage", e);
       dispatchValues({ type: 'UPDATE_VALUE_FAILURE' })
     }
   };
@@ -128,27 +131,27 @@ export default function TabTwoScreen(props: any) {
   useEffect(() => {
     readItemsFromStorage();
     Storage.updateData = () => readItemsFromStorage();
-    // console.log("TabTwoScreen.init", props);
+    // console.log("WardrobeScreen.init", props);
     // console.log(props.navigate.route.params)
   }, []);
 
-  const handleUpdateValue = (item: any) => {
-    console.log("TabTwoScreen.handleUpdateValue", item);
-    writeItemToStorage(item);
-  };
-
   const handleLeftBtnPress = (item: any) => {
-    console.log("TabTwoScreen.handleLeftBtnPress", item);
+    // console.log("WardrobeScreen.handleLeftBtnPress", item);
     item.date = new Date().getTime();
-    handleUpdateValue(item);
+    writeItemToStorage(item);
+  }
+
+  const handleDeleteBtnPress = (id: string) => {
+    const key = "@DRESS_"+id;
+    removeItemFromStorage(key);
   }
   
-  console.log("TabTwoSceen", values);
+  // console.log("WardrobeSceen", values);
   return (
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           {values.data.sort((a:{date:number},b:{date:number})=>a.date-b.date).map((data:{uri:string; id:string; date:number;}) => (
-            <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)} date={data.date}/>
+            <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)} onDeleteBtnPress={()=>handleDeleteBtnPress(data.id)} date={data.date}/>
           ))}
         </View>
       </ScrollView>

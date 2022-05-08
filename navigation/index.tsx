@@ -3,24 +3,20 @@
  * https://reactnavigation.org/docs/getting-started
  *
  */
-import { FontAwesome } from '@expo/vector-icons';
+ import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { Fragment } from 'react';
 import { ColorSchemeName, Pressable } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
-import CameraScreen from '../screens/CameraScreen';
-import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabThreeScreen from '../screens/TabThreeScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import WardrobeScreen from '../screens/WardrobeScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import Storage from '../manage/Storage';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -32,11 +28,22 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
   );
 }
 
-/**
- * A root stack navigator is often used for displaying modals on top of all other content.
- * https://reactnavigation.org/docs/modal
- */
-const Stack = createNativeStackNavigator<RootStackParamList>();
+
+const getUUid = () => {
+  const s = [];
+  const hexDigits = '0123456789abcdef';
+  for (let i = 0; i < 36; i++) {
+    s[i] = hexDigits[Math.floor(Math.random() * 0x10)];
+  }
+  s[14] = '4';
+  if(s[19]>='a' && s[19] <= 'f') {
+    s[19] = hexDigits[8];
+  } else {
+    s[19] = hexDigits[parseInt(s[19]) & 0x3];
+  }
+  s[8] = s[13] = s[18] = s[23] = '-'; 
+  return s.join('');
+}
 
 const openImagePickerAsync = async () => {
   let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -51,8 +58,25 @@ const openImagePickerAsync = async () => {
   if (pickerResult.cancelled === true) {
     return;
   }
-  return pickerResult.uri;
+
+  const id = getUUid();
+  const now = new Date().getTime();
+  const dressData = {
+    id: id,
+    uri: pickerResult.uri,
+    date: now,
+  }
+  await Storage.setObjectValue("@DRESS_"+id, dressData);
+  Storage.updateData();
 };
+
+/**
+ * A root stack navigator is often used for displaying modals on top of all other content.
+ * https://reactnavigation.org/docs/modal
+ */
+const Stack = createNativeStackNavigator<RootStackParamList>();
+
+
 
 function RootNavigator() {
   const colorScheme = useColorScheme();
@@ -60,18 +84,6 @@ function RootNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="Root" component={BottomTabNavigator} options={{ headerShown: false }} />
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
-      <Stack.Group screenOptions={{ presentation: 'modal' }}>
-        <Stack.Screen name="Modal" component={ModalScreen} />
-        <Stack.Screen
-          name="Camera" 
-          component={CameraScreen} 
-          options={()=>({
-            title: "拍照",
-            headerLeft:  () => (
-              <Fragment></Fragment>
-            ),
-          })}/>
-      </Stack.Group>
     </Stack.Navigator>
   );
 }
@@ -87,24 +99,26 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Wardrobe"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabTwoScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
+        name="Wardrobe"
+        component={WardrobeScreen}
+        options={({ navigation }: RootTabScreenProps<'Wardrobe'>) => ({
           title: '衣柜',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="hanger" size={28} color={color} />,
           headerRight: () => (
             <Pressable
-              onPress={() => navigation.navigate('Camera')}
+              onPress={() => {
+                openImagePickerAsync()
+              }}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
               })}>
               <FontAwesome
-                name="camera"
+                name="plus"
                 size={25}
                 color={Colors[colorScheme].text}
                 style={{ marginRight: 15 }}
@@ -113,36 +127,6 @@ function BottomTabNavigator() {
           ),
         })}
       />
-      {/* <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
-        options={{
-          title: '衣柜',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Camera')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1,
-              })}>
-              <FontAwesome
-                name="info-circle"
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          ),
-        }}
-      /> */}
-      {/* <BottomTab.Screen
-        name="TabThree"
-        component={TabThreeScreen}
-        options={{
-          title: 'Tab Three',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      /> */}
     </BottomTab.Navigator>
   );
 }
