@@ -146,7 +146,7 @@ export default function TabTwoScreen(props) {
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           {values.data.sort((a,b)=>a.date-b.date).map((data) => (
-            <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)}/>
+            <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)} date={data.date}/>
           ))}
         </View>
       </ScrollView>

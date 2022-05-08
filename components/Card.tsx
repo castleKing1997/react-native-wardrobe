@@ -15,11 +15,40 @@ import {
  } from 'react-native';
  
 const {width, height} = Dimensions.get('window');
+
+const getTimer = (lastEditTime: Date) => {
+    var minute = 1000 * 60;
+    var hour = minute * 60;
+    var day = hour * 24;
+    var week = day * 7;
+    var month = day * 30;
+    var curTime = new Date().getTime();//当前的时间戳
+    var time = curTime - lastEditTime;
+
+    var result = null;
+    if (time < 0) {
+        alert("设置的时间不能早于当前时间！");
+    } else if (time / month >= 1) {
+        result = "发布于：" + parseInt(time / month) + "月前";
+    } else if (time / week >= 1) {
+        result = "发布于：" + parseInt(time / week) + "周前";
+    } else if (time / day >= 1) {
+        result = "发布于：" + parseInt(time / day) + "天前";
+    } else if (time / hour >= 1) {
+        result = "发布于：" + parseInt(time / hour) + "小时前";
+    } else if (time / minute >= 1) {
+        result = "发布于：" + parseInt(time / minute) + "分钟前";
+    } else {
+        result = "刚刚发布！";
+    }
+    return result;
+}
  
 export default function Card(props: { uri: any; onLeftBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onRightBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; }){
     return(
             <View style={styles.cardContainer}>
                 <ImageBackground  source={{uri: props.uri}} style={styles.cardBackGround} imageStyle={styles.cardBackGroundImage} resizeMode="cover" />
+                <Text style={styles.text}>{getTimer(props.date)}</Text>
                 <View style={styles.cardBottomBackground}>
                     <Pressable style={styles.cardBtn} onPress={props.onLeftBtnPress}>
                         <Text style={styles.textBtn}>今天穿</Text>
@@ -37,6 +66,7 @@ Card.defaultProps = {
     key: '0',
     onLeftBtnPress: (e: any)=>{console.log(e)},
     onRightBtnPress: (e: any)=>{console.log(e)},
+    date: null,
 }
 
 const styles = StyleSheet.create({
