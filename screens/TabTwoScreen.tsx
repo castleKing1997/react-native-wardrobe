@@ -8,14 +8,16 @@ import { useFocusEffect } from '@react-navigation/native';
 import Navigation from '../navigation';
 
 const getDressData = async () => {
-  const items = []
+  const items: any[] = []
   try {
     const keys = await Storage.getAllKeys();
     const matchedKey = Storage.matchKey(keys, "@DRESS_*");
     const dressData = await Storage.getMultiple(matchedKey);
-    dressData.forEach(element => {
+    dressData?.forEach(element => {
       // console.log("TabTowScreen.getDressData", element);
-      items.push(JSON.parse(element[1]));
+      if(element[1]) {
+        items.push(JSON.parse(element[1]));
+      }
     });
   } catch(e) {
     console.log("TabTwoSceen.getDressData", e);
@@ -32,7 +34,7 @@ const getDressData = async () => {
 //   }
 // }
 
-const valuesReducer = (state, action) => {
+const valuesReducer = (state: any, action: any) => {
   switch (action.type) {
   case 'VALUES_FETCH_INIT':
     return {
@@ -57,7 +59,7 @@ const valuesReducer = (state, action) => {
     return {
       ...state,
       data: state.data.filter(
-      value => action.payload.key !== value.key
+        (      value: { key: any; }) => action.payload.key !== value.key
       ),
     };
   case 'UPDATE_VALUE':
@@ -86,7 +88,7 @@ const valuesReducer = (state, action) => {
   }
 };
 
-export default function TabTwoScreen(props) {
+export default function TabTwoScreen(props: any) {
   const [values, dispatchValues] = useReducer(
     valuesReducer,
     { data: [], isLoading: false, isError: false, isUpdating: false}
@@ -107,7 +109,7 @@ export default function TabTwoScreen(props) {
     }
   };
 
-  const writeItemToStorage = async item => {
+  const writeItemToStorage = async (item: any) => {
     // dispatchValues({ type: 'UPDATE_VALUE_INIT' });
     console.log("TabTwoScreen.writeItemToStorage",item)
     try {
@@ -130,12 +132,12 @@ export default function TabTwoScreen(props) {
     // console.log(props.navigate.route.params)
   }, []);
 
-  const handleUpdateValue = item => {
+  const handleUpdateValue = (item: any) => {
     console.log("TabTwoScreen.handleUpdateValue", item);
     writeItemToStorage(item);
   };
 
-  const handleLeftBtnPress = item => {
+  const handleLeftBtnPress = (item: any) => {
     console.log("TabTwoScreen.handleLeftBtnPress", item);
     item.date = new Date().getTime();
     handleUpdateValue(item);
@@ -145,7 +147,7 @@ export default function TabTwoScreen(props) {
   return (
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
-          {values.data.sort((a,b)=>a.date-b.date).map((data) => (
+          {values.data.sort((a:{date:number},b:{date:number})=>a.date-b.date).map((data:{uri:string; id:string; date:number;}) => (
             <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)} date={data.date}/>
           ))}
         </View>

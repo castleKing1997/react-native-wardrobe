@@ -1,5 +1,4 @@
-import { useLinkProps } from '@react-navigation/native';
-import React, {Component} from 'react';
+import React from 'react';
 import {
      Dimensions,
      View,
