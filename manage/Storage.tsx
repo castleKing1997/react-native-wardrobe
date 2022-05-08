@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Storage extends React.Component{
   static updateData = () => {console.log("updateData");};
+  
   static convertData(data: any[], name: string, id: any) {
     let dataDic: string[][] = [];
     data.forEach((element: { [x: string]: string; }) => {
@@ -24,6 +25,14 @@ export default class Storage extends React.Component{
     try {
       const jsonValue = await AsyncStorage.getItem(key)
       return jsonValue != null ? JSON.parse(jsonValue) : null
+    } catch(e) {
+      console.log(e);
+    }
+  }
+
+  static removeMyObject = async (key: string) => {
+    try {
+      await AsyncStorage.removeItem(key);
     } catch(e) {
       console.log(e);
     }
