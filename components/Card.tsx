@@ -11,15 +11,15 @@ import {
      ImageBackground,
      Button,
      Pressable,
+     GestureResponderEvent,
  } from 'react-native';
  
 const {width, height} = Dimensions.get('window');
  
-export default function Card(props){
+export default function Card(props: { uri: any; onLeftBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onRightBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; }){
     return(
             <View style={styles.cardContainer}>
-                <ImageBackground source={{uri: props.uri}} style={styles.cardBackGround} imageStyle={styles.cardBackGroundImage} resizeMode="cover" >
-                </ImageBackground>
+                <ImageBackground  source={{uri: props.uri}} style={styles.cardBackGround} imageStyle={styles.cardBackGroundImage} resizeMode="cover" />
                 <View style={styles.cardBottomBackground}>
                     <Pressable style={styles.cardBtn} onPress={props.onLeftBtnPress}>
                         <Text style={styles.textBtn}>今天穿</Text>
@@ -35,8 +35,8 @@ export default function Card(props){
 Card.defaultProps = {
     uri: 'https://reactnative.dev/img/tiny_logo.png',
     key: '0',
-    onLeftBtnPress: (e)=>{console.log(e)},
-    onRightBtnPress: (e)=>{console.log(e)},
+    onLeftBtnPress: (e: any)=>{console.log(e)},
+    onRightBtnPress: (e: any)=>{console.log(e)},
 }
 
 const styles = StyleSheet.create({
@@ -73,8 +73,14 @@ const styles = StyleSheet.create({
         margin: 2,
     },
     textBtn: {
-        color: "blank",
+        color: "#000",
         fontSize: 20,
         fontWeight: 'bold',
+    },
+    text: {
+        color: "#000",
+        fontSize: 16,
+        marginLeft: 10,
+        marginVertical: 5,
     }
 })

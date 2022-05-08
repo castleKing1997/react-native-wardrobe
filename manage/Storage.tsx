@@ -3,15 +3,16 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Storage extends React.Component{
-  static convertData(data, name, id) {
-    let dataDic = [];
-    data.forEach(element => {
+  static updateData = () => {console.log("updateData");};
+  static convertData(data: any[], name: string, id: any) {
+    let dataDic: string[][] = [];
+    data.forEach((element: { [x: string]: string; }) => {
       dataDic.push(["@"+name+"_"+element['id'], JSON.stringify(element)]);
     });
     return dataDic;
   };
 
-  static getMyStringValue = async (key) => {
+  static getMyStringValue = async (key: string) => {
     try {
       return await AsyncStorage.getItem(key)
     } catch(e) {
@@ -19,7 +20,7 @@ export default class Storage extends React.Component{
     };
   }
 
-  static getMyObject = async (key) => {
+  static getMyObject = async (key: string) => {
     try {
       const jsonValue = await AsyncStorage.getItem(key)
       return jsonValue != null ? JSON.parse(jsonValue) : null
@@ -28,7 +29,7 @@ export default class Storage extends React.Component{
     }
   }
 
-  static setStringValue = async (key, value) => {
+  static setStringValue = async (key: string, value: string) => {
     try {
       await AsyncStorage.setItem(key, value)
     } catch(e) {
@@ -36,7 +37,7 @@ export default class Storage extends React.Component{
     }
   }
 
-  static setObjectValue = async (key, value) => {
+  static setObjectValue = async (key: string, value: { id: string; uri: any; date: number; }) => {
     try {
       const jsonValue = JSON.stringify(value)
       await AsyncStorage.setItem(key, jsonValue)
@@ -46,7 +47,7 @@ export default class Storage extends React.Component{
   }
 
   static getAllKeys = async () => {
-    let keys = []
+    let keys: string[] = []
     try {
       keys = await AsyncStorage.getAllKeys()
     } catch(e) {
@@ -55,7 +56,7 @@ export default class Storage extends React.Component{
     return keys;
   }
 
-  static getMultiple = async (keys) => {
+  static getMultiple = async (keys: any[]) => {
     let values
     try {
       return await AsyncStorage.multiGet(keys);
@@ -64,7 +65,7 @@ export default class Storage extends React.Component{
     }
   }
 
-  static multiSet = async (values) => {
+  static multiSet = async (values: string[][]) => {
     try {
       await AsyncStorage.multiSet(values)
     } catch(e) {
@@ -72,9 +73,9 @@ export default class Storage extends React.Component{
     }
   }
 
-  static matchKey = (keys, regexp) => {
-    let matchedKey = [];
-    keys.forEach(element => {
+  static matchKey = (keys: any[], regexp: string) => {
+    let matchedKey: any[] = [];
+    keys.forEach((element: string) => {
       if (element.match(regexp)) {
         matchedKey.push(element);
       }
