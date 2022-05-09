@@ -101,12 +101,16 @@ export default function WardrobeScreen(props: any) {
     const key = "@DRESS_"+id;
     removeItemFromStorage(key);
   }
+
+  const handleCardPress = (id: string) => {
+    props.navigation.navigate("DressDetail", {id:id});
+  }
   
   return (
       <ScrollView style={styles.scrollView}>
         <View style={styles.container}>
           {values.data.sort((a:{date:number},b:{date:number})=>a.date-b.date).map((data:{uri:string; id:string; date:number;}) => (
-            <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)} onDeleteBtnPress={()=>handleDeleteBtnPress(data.id)} date={data.date}/>
+            <Card uri={data.uri} key={data.id} onLeftBtnPress={()=>handleLeftBtnPress(data)} onDeleteBtnPress={()=>handleDeleteBtnPress(data.id)} onCardPress={()=>handleCardPress(data.id)} date={data.date}/>
           ))}
         </View>
       </ScrollView>

@@ -39,10 +39,12 @@ const getTimer = (lastEditTime: number) => {
     return result;
 }
  
-export default function Card(props: { uri: any; onLeftBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onRightBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onDeleteBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; date:number}){
+export default function Card(props: { uri: string; onCardPress: ((event: GestureResponderEvent) => void) | null | undefined; onLeftBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onRightBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onDeleteBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; date:number}){
     return(
             <View style={styles.cardContainer}>
                 <ImageBackground  source={{uri: props.uri}} style={styles.cardBackGround} imageStyle={styles.cardBackGroundImage} resizeMode="cover" />
+                <Pressable style={styles.pressArea} onPress={props.onCardPress}>
+                </Pressable>
                 <Text style={[styles.text, {bottom:47,right:0}]}>{getTimer(props.date)}</Text>
                 <Pressable style={[styles.smallBtn, {top:0, right:0}]} onPress={props.onDeleteBtnPress}>
                     <MaterialCommunityIcons name="close" size={18}/>
@@ -65,6 +67,7 @@ Card.defaultProps = {
     onLeftBtnPress: (e: any)=>{console.log(e)},
     onRightBtnPress: (e: any)=>{console.log(e)},
     onDeleteBtnPress: (e: any)=>{console.log(e)},
+    onCardPress: (e: any)=>{console.log(e)},
     date: 0,
 }
 
@@ -100,6 +103,12 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         opacity: 0.5,
         margin: 2,
+    },
+    pressArea: {
+        width: '100%',
+        height: '100%',
+        color: '#f00',
+        position: 'absolute',
     },
     smallBtn: {
         opacity: 0.8,
