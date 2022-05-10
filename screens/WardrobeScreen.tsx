@@ -1,8 +1,9 @@
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import Card from '../components/Card';
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { View } from '../components/Themed';
 import Storage from '../manage/Storage';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const getDressData = async () => {
   const items: any[] = []
@@ -53,6 +54,9 @@ export default function WardrobeScreen(props: any) {
     valuesReducer,
     { data: [], isLoading: false, isError: false, isUpdating: false }
   );
+
+  const [ascending, setAscending] = useState(false);
+  const [sortAtt, setSortAtt] = useState("date");
 
   const readItemsFromStorage = async () => {
     dispatchValues({ type: 'VALUES_FETCH_INIT' });
@@ -107,11 +111,26 @@ export default function WardrobeScreen(props: any) {
     props.navigation.navigate("DressDetail", { id: id });
   }
 
+  const sortTypes = (a: any, b: any, sortAtt: string, ascending: boolean = false) => ascending ? b[sortAtt] - a[sortAtt] : a[sortAtt] - b[sortAtt]
+
   return (
     <ScrollView style={styles.scrollView}>
-      <View style={styles.headerContainer}></View>
+      <View style={styles.headerContainer}>
+        <Pressable style={[styles.headerBtn, { left: 0, backgroundColor: sortAtt === "date" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("date") }}>
+          <Text style={styles.smallText}>按使用时间</Text>
+        </Pressable>
+        <Pressable style={[styles.headerBtn, { left: 0, backgroundColor: sortAtt === "count" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("count") }}>
+          <Text style={styles.smallText}>按使用次数</Text>
+        </Pressable>
+        <Pressable style={[styles.headerBtn, { left: 0, backgroundColor: sortAtt === "buyDate" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("buyDate") }}>
+          <Text style={styles.smallText}>按购买时间</Text>
+        </Pressable>
+        <Pressable style={[styles.headerBtn, { right: 8, position: 'absolute', width: 24 }]} onPress={() => { setAscending(!ascending) }}>
+          <MaterialCommunityIcons name={ascending ? "arrow-up" : "arrow-down"} size={22} color="#aaa" />
+        </Pressable>
+      </View>
       <View style={styles.container}>
-        {values.data.sort((a: { date: number }, b: { date: number }) => a.date - b.date).map((data: { uri: string; id: string; date: number; }) => (
+        {values.data.sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { uri: string; id: string; date: number; }) => (
           <Card uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id)} onCardPress={() => handleCardPress(data.id)} date={data.date} />
         ))}
       </View>
@@ -127,9 +146,23 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   headerContainer: {
-    height: 20,
+    height: 30,
+    flexDirection: 'row',
     backgroundColor: "#ddd",
     position: 'relative',
+    alignItems: 'center',
+  },
+  headerBtn: {
+    height: 24,
+    width: 80,
+    marginHorizontal: 4,
+    backgroundColor: "#fff",
+    borderRadius: 5,
+    alignItems: 'center',
+    alignContent: 'center',
+  },
+  smallText: {
+    fontSize: 12,
   },
   bottomContainer: {
     height: 20,
