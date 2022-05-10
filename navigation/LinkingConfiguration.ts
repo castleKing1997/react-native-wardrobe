@@ -22,6 +22,7 @@ const linking: LinkingOptions<RootStackParamList> = {
           },
         },
       },
+      DressEdit: 'dress/edit',
       DressDetail: 'dress',
       NotFound: '*',
     },
