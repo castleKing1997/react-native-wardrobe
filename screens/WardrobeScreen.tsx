@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet, Text } from 'react-native';
 import Card from '../components/Card';
 import React, { useEffect, useReducer } from 'react';
 import { View } from '../components/Themed';
@@ -109,11 +109,13 @@ export default function WardrobeScreen(props: any) {
 
   return (
     <ScrollView style={styles.scrollView}>
+      <View style={styles.headerContainer}></View>
       <View style={styles.container}>
         {values.data.sort((a: { date: number }, b: { date: number }) => a.date - b.date).map((data: { uri: string; id: string; date: number; }) => (
           <Card uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id)} onCardPress={() => handleCardPress(data.id)} date={data.date} />
         ))}
       </View>
+      <View style={styles.bottomContainer}><Text>--到底啦--</Text></View>
     </ScrollView>
   );
 }
@@ -123,6 +125,17 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     flexWrap: "wrap",
+  },
+  headerContainer: {
+    height: 20,
+    backgroundColor: "#ddd",
+    position: 'relative',
+  },
+  bottomContainer: {
+    height: 20,
+    backgroundColor: "#ddd",
+    alignContent: 'center',
+    alignItems: 'center',
   },
   scrollView: {
     flex: 1,

@@ -32,13 +32,6 @@ const valueReducer = (state: any, action: any) => {
         isError: false,
         data: action.payload,
       };
-    case 'UPDATE_USERNAME':
-      return {
-        ...state,
-        isLoading: false,
-        isError: false,
-        data: { ...state.data, dressName: action.payload },
-      };
     default:
       throw new Error();
   }
@@ -122,13 +115,13 @@ export default function DressEditScreen(props: any) {
         </View>
         <View style={styles.container}>
           <TextInput
-            value={dressName}
+            value={dressName || ""}
             onChangeText={(x) => { setDressName(x) }}
             placeholder={'给ta起个名儿……'}
             style={styles.input}
           />
           <TextInput
-            value={latestDate}
+            value={latestDate || ""}
             onChangeText={(x) => { setLatestDate(x) }}
             onFocus={() => { setShowDatePicker(true); setDateFor("latest"); }}
             onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
@@ -136,7 +129,7 @@ export default function DressEditScreen(props: any) {
             style={styles.input}
           />
           <TextInput
-            value={buyDate}
+            value={buyDate || ""}
             onChangeText={(x) => { setBuyDate(x) }}
             onFocus={() => { setShowDatePicker(true); setDateFor("buy"); }}
             onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
