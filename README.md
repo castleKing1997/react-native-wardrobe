@@ -15,46 +15,38 @@
 
 ## APK下载
 
-<img src="etc/README/image-20220511193655913.png" alt="image-20220511193655913" style="zoom:20%;" />
+![image-20220511194549689](etc/README/image-20220511194549689.png)
 
 ## 页面展示
 
 - 衣物
   - 衣物浏览页面
 
-    <img src="etc/README/image-20220511192849435.png" alt="image-20220511192849435" style="zoom: 15%;" />
-
   - 衣物详情页面
-
-    <img src="etc/README/image-20220511192929882.png" alt="image-20220511192929882" style="zoom:15%;" />
 
   - 衣物编辑页面
 
-    <img src="etc/README/image-20220511192950290.png" alt="image-20220511192950290" style="zoom:15%;" />
+    ![image-20220511194954174](etc/README/image-20220511194954174.png)
 
 - 穿搭
 
   - 穿搭浏览页面
 
-    <img src="etc/README/image-20220511193043930.png" alt="image-20220511193043930" style="zoom:15%;" />
-
   - 穿搭详情页面
-
-    <img src="etc/README/image-20220511193105677.png" alt="image-20220511193105677" style="zoom:15%;" />
 
   - 穿搭编辑页面
 
-    <img src="etc/README/image-20220511193121698.png" alt="image-20220511193121698" style="zoom:15%;" />
-
   - 衣物选择页面
 
-    <img src="etc/README/image-20220511193156350.png" alt="image-20220511193156350" style="zoom:15%;" />
+    ![image-20220511195013644](etc/README/image-20220511195013644.png)
+
+    
 
 ## 赞助
 
 如果这个项目对您有所帮助，或者您鼓励作者对这个项目的继续开发，欢迎扫码赞助~
 
-<img src="etc/README/image-20220511194318887.png" alt="image-20220511194318887" style="zoom: 20%;" />
+![image-20220511194831669](etc/README/image-20220511194831669.png)
 
 
 
