@@ -29,9 +29,9 @@ const valueReducer = (state: any, action: any) => {
   }
 };
 
-export default function DressDetailScreen(props: any) {
+export default function OutfitDetailScreen(props: any) {
   const id = props.route.params.id;
-  const key = "@DRESS_" + id;
+  const key = "@OUTFIT_" + id;
   const [value, dispatchValue] = useReducer(
     valueReducer,
     { data: null, isLoading: false, isError: false }
@@ -46,7 +46,7 @@ export default function DressDetailScreen(props: any) {
         payload: item,
       });
     } catch (e) {
-      console.log("DressScreen.readItemFromStorage", e);
+      console.log("OutfitScreen.readItemFromStorage", e);
       dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
     }
   };
@@ -59,17 +59,24 @@ export default function DressDetailScreen(props: any) {
   } else {
     date = (new Date()).toLocaleDateString()
   }
-  console.log(value);
+
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.topContainer}>
-        <ImageBackground style={styles.dressImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+        <ImageBackground style={styles.OutfitImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+      </View>
+      <View style={[styles.container, { flexDirection: "row", flexWrap: "wrap", }]}>
+        {value.data?.dressItems.map((dress: any) => (
+          <Pressable key={dress[0]} style={[styles.dressBtn, { paddingTop: 3 }]} onPress={() => { props.navigation.navigate("DressDetail", { id: dress[0] }) }}>
+            <Text style={styles.smallText}>{dress[1]}</Text>
+          </Pressable>
+        ))}
       </View>
       <View style={styles.container}>
-        <Text style={styles.title}>{value.data ? (value.data.name ? value.data.name : "我的小裙子") : "我的小裙子"}</Text>
+        <Text style={styles.title}>{value.data ? (value.data.name ? value.data.name : "我的小套装") : "我的小套装"}</Text>
         <Text style={styles.text}>上次穿：{formatDate(date)}</Text>
-        <Text style={styles.text}>穿过：{value.data ? value.data.dressCount : 0}次</Text>
-        <Text style={styles.text}>入手时间：{value.data ? getTimer(value.data.buyDate, "刚刚入手！") : "刚刚入手！"}</Text>
+        <Text style={styles.text}>穿过：{value.data ? value.data.OutfitCount : 0}次</Text>
+        <Text style={styles.text}>创建时间：{value.data ? getTimer(value.data.createDate, "刚刚创建！") : "刚刚入手！"}</Text>
       </View>
     </ScrollView>
   );
@@ -86,11 +93,21 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: '#fff',
-    height: 500,
-    margin: 5,
-    padding: 5,
+    marginTop: 5,
+    marginHorizontal: 5,
+    paddingTop: 5,
   },
-  dressImage: {
+  dressBtn: {
+    height: 24,
+    paddingHorizontal: 5,
+    marginHorizontal: 4,
+    marginBottom: 4,
+    backgroundColor: "#cab",
+    borderRadius: 8,
+    alignItems: 'center',
+    alignContent: 'center',
+  },
+  OutfitImage: {
     width: '100%',
     height: 250,
     marginBottom: 10,
@@ -107,5 +124,8 @@ const styles = StyleSheet.create({
     color: "#444",
     marginLeft: 10,
     marginTop: 5,
-  }
+  },
+  smallText: {
+    fontSize: 12,
+  },
 });

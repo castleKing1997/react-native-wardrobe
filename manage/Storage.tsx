@@ -3,7 +3,11 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Storage extends React.Component {
-  static updateData = () => { console.log("updateData"); };
+  static updateData = async () => { console.log("updateData"); };
+
+  static chooseDress = async () => { console.log("chooseDress"); };
+
+  static updateOutfitEdit = async () => { console.log("updateOutfitEdit"); }
 
   static convertData(data: any[], name: string, id: any) {
     let dataDic: string[][] = [];

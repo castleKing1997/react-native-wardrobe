@@ -5,19 +5,19 @@ import { View } from '../components/Themed';
 import Storage from '../manage/Storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const getDressData = async () => {
+const getOutfitData = async () => {
   const items: any[] = []
   try {
     const keys = await Storage.getAllKeys();
-    const matchedKey = Storage.matchKey(keys, "@DRESS_*");
-    const dressData = await Storage.getMultiple(matchedKey);
-    dressData?.forEach(element => {
+    const matchedKey = Storage.matchKey(keys, "@OUTFIT_*");
+    const outfitData = await Storage.getMultiple(matchedKey);
+    outfitData?.forEach(element => {
       if (element[1]) {
         items.push(JSON.parse(element[1]));
       }
     });
   } catch (e) {
-    console.log("WardrobeSceen.getDressData", e);
+    console.log("OutfitSceen.getOutfitData", e);
   }
   return items;
 };
@@ -49,7 +49,7 @@ const valuesReducer = (state: any, action: any) => {
   }
 };
 
-export default function WardrobeScreen(props: any) {
+export default function OutfitScreen(props: any) {
   const [values, dispatchValues] = useReducer(
     valuesReducer,
     { data: [], isLoading: false, isError: false, isUpdating: false }
@@ -61,13 +61,13 @@ export default function WardrobeScreen(props: any) {
   const readItemsFromStorage = async () => {
     dispatchValues({ type: 'VALUES_FETCH_INIT' });
     try {
-      let items = await getDressData();
+      let items = await getOutfitData();
       dispatchValues({
         type: 'VALUES_FETCH_SUCCESS',
         payload: items,
       });
     } catch (e) {
-      console.log("WardrobeScreen.readItemsFromStorage", e);
+      console.log("OutfitScreen.readItemsFromStorage", e);
       dispatchValues({ type: 'VALUES_FETCH_FAILURE' })
     }
   };
@@ -77,17 +77,17 @@ export default function WardrobeScreen(props: any) {
       await Storage.removeMyObject(key);
       readItemsFromStorage();
     } catch (e) {
-      console.log("WardrobeScreen.removeItemFromStorage", e);
+      console.log("OutfitScreen.removeItemFromStorage", e);
     }
   }
 
   const writeItemToStorage = async (item: any) => {
     try {
-      const id = "@DRESS_" + item.id;
+      const id = "@OUTFIT_" + item.id;
       await Storage.setObjectValue(id, item);
       readItemsFromStorage();
     } catch (e) {
-      console.log("WardrobeScreen.writeItemToStorage", e);
+      console.log("OutfitScreen.writeItemToStorage", e);
     }
   };
 
@@ -98,17 +98,17 @@ export default function WardrobeScreen(props: any) {
 
   const handleLeftBtnPress = (item: any) => {
     item.date = new Date().getTime();
-    item.dressCount += 1;
+    item.outfitCount += 1;
     writeItemToStorage(item);
   }
 
   const handleDeleteBtnPress = (id: string) => {
-    const key = "@DRESS_" + id;
+    const key = "@OUTFIT_" + id;
     removeItemFromStorage(key);
   }
 
   const handleCardPress = (id: string) => {
-    props.navigation.navigate("DressDetail", { id: id });
+    props.navigation.navigate("OutfitDetail", { id: id });
   }
 
   const sortTypes = (a: any, b: any, sortAtt: string, ascending: boolean = false) => ascending ? b[sortAtt] - a[sortAtt] : a[sortAtt] - b[sortAtt]
@@ -116,14 +116,14 @@ export default function WardrobeScreen(props: any) {
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.headerContainer}>
-        <Pressable style={[styles.headerBtn, { left: 0, backgroundColor: sortAtt === "date" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("date") }}>
+        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "date" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("date") }}>
           <Text style={styles.smallText}>按使用时间</Text>
         </Pressable>
-        <Pressable style={[styles.headerBtn, { left: 0, backgroundColor: sortAtt === "count" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("count") }}>
+        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "count" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("count") }}>
           <Text style={styles.smallText}>按使用次数</Text>
         </Pressable>
-        <Pressable style={[styles.headerBtn, { left: 0, backgroundColor: sortAtt === "buyDate" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("buyDate") }}>
-          <Text style={styles.smallText}>按购买时间</Text>
+        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "createDate" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("createDate") }}>
+          <Text style={styles.smallText}>按创建时间</Text>
         </Pressable>
         <Pressable style={[styles.headerBtn, { right: 8, position: 'absolute', width: 24 }]} onPress={() => { setAscending(!ascending) }}>
           <MaterialCommunityIcons name={ascending ? "arrow-up" : "arrow-down"} size={22} color="#aaa" />

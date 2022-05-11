@@ -15,15 +15,23 @@ const linking: LinkingOptions<RootStackParamList> = {
     screens: {
       Root: {
         screens: {
-          Wardrobe: {
+          Dress: {
             screens: {
-              WardrobeScreen: 'wardrobe',
+              DressScreen: 'dress',
             },
           },
+          Outfit: {
+            screens: {
+              OutfitScreen: 'outfit',
+            }
+          }
         },
       },
       DressEdit: 'dress/edit',
-      DressDetail: 'dress',
+      DressDetail: 'dress/detail',
+      DressChoose: 'dress/choose',
+      OutfitEdit: 'outfit/edit',
+      OutfitDetail: 'outfit/detail',
       NotFound: '*',
     },
   },

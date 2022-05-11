@@ -13,12 +13,16 @@ import * as ImagePicker from 'expo-image-picker';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import WardrobeScreen from '../screens/WardrobeScreen';
+import DressScreen from '../screens/DressScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import Storage from '../manage/Storage';
 import DressDetailScreen from '../screens/DressDetailScreen';
 import DressEditScreen from '../screens/DressEditScreen';
+import OutfitScreen from '../screens/OutfitScreen';
+import OutfitEditScreen from '../screens/OutfitEditScree';
+import OutfitDetailScreen from '../screens/OutfitDetailScreen';
+import DressChooseScreen from '../screens/DressChooseScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -47,7 +51,7 @@ const getUUid = () => {
   return s.join('');
 }
 
-const openImagePickerAsync = async (navigation: any) => {
+const openImagePickerAsync = async (navigation: any, type: string) => {
   let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
   if (permissionResult.granted === false) {
     alert('Permission to access camera roll is required!');
@@ -58,17 +62,32 @@ const openImagePickerAsync = async (navigation: any) => {
     return;
   }
   const id = getUUid();
-  const dressData = {
-    id: id,
-    uri: pickerResult.uri,
+  if (type === "dress") {
+    const dressData = {
+      id: id,
+      uri: pickerResult.uri,
+    }
+    await Storage.setObjectValue("@DRESS_" + id, dressData);
+    navigation.navigate("DressEdit", { id: id, type: "set" });
+  } else if (type == "outfit") {
+    const outfitData = {
+      id: id,
+      uri: pickerResult.uri,
+      dressItems: [],
+    }
+    await Storage.setObjectValue("@OUTFIT_" + id, outfitData);
+    navigation.navigate("OutfitEdit", { id: id, type: "set" });
   }
-  await Storage.setObjectValue("@DRESS_" + id, dressData);
-  navigation.navigate("DressEdit", { id: id, type: "set" });
+
 };
 
-const handleEditItem = (navigation: any) => {
+const handleEditItem = (navigation: any, type: string) => {
   const id = navigation.route.params.id;
-  navigation.navigation.navigate("DressEdit", { id: id, type: "update" });
+  if (type === "dress") {
+    navigation.navigation.navigate("DressEdit", { id: id, type: "update" });
+  } else if (type === "outfit") {
+    navigation.navigation.navigate("OutfitEdit", { id: id, type: "update" });
+  }
 }
 
 /**
@@ -92,7 +111,7 @@ function RootNavigator() {
             "title": "单品详情",
             headerRight: () => (<Pressable
               onPress={() => {
-                handleEditItem(navigation)
+                handleEditItem(navigation, "dress")
               }}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,
@@ -105,7 +124,48 @@ function RootNavigator() {
               />
             </Pressable>)
           })} />
+        <Stack.Screen
+          name="OutfitDetail"
+          component={OutfitDetailScreen}
+          options={(navigation) => ({
+            "title": "穿搭详情",
+            headerRight: () => (<Pressable
+              onPress={() => {
+                handleEditItem(navigation, "outfit")
+              }}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <FontAwesome
+                name="edit"
+                size={25}
+                color={Colors[colorScheme].text}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>)
+          })} />
+        <Stack.Screen
+          name="DressChoose"
+          component={DressChooseScreen}
+          options={() => ({
+            "title": "单品选择",
+            headerRight: () => (<Pressable
+              onPress={() => {
+                Storage.chooseDress();
+              }}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <FontAwesome
+                name="check"
+                size={25}
+                color={Colors[colorScheme].text}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>)
+          })} />
         <Stack.Screen name="DressEdit" component={DressEditScreen} options={() => ({ "title": "单品编辑", headerLeft: () => (<React.Fragment></React.Fragment>) })} />
+        <Stack.Screen name="OutfitEdit" component={OutfitEditScreen} options={() => ({ "title": "穿搭编辑", headerLeft: () => (<React.Fragment></React.Fragment>) })} />
       </Stack.Group>
       <Stack.Screen name="NotFound" component={NotFoundScreen} options={{ title: 'Oops!' }} />
     </Stack.Navigator>
@@ -123,20 +183,44 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="Wardrobe"
+      initialRouteName="Dress"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="Wardrobe"
-        component={WardrobeScreen}
-        options={({ navigation }: RootTabScreenProps<'Wardrobe'>) => ({
+        name="Dress"
+        component={DressScreen}
+        options={({ navigation }: RootTabScreenProps<'Dress'>) => ({
           title: '衣柜',
           tabBarIcon: ({ color }) => <MaterialCommunityIcons name="hanger" size={28} color={color} />,
           headerRight: () => (
             <Pressable
               onPress={() => {
-                openImagePickerAsync(navigation)
+                openImagePickerAsync(navigation, "dress")
+              }}
+              style={({ pressed }) => ({
+                opacity: pressed ? 0.5 : 1,
+              })}>
+              <FontAwesome
+                name="plus"
+                size={25}
+                color={Colors[colorScheme].text}
+                style={{ marginRight: 15 }}
+              />
+            </Pressable>
+          ),
+        })}
+      />
+      <BottomTab.Screen
+        name="Outfit"
+        component={OutfitScreen}
+        options={({ navigation }: RootTabScreenProps<'Outfit'>) => ({
+          title: '穿搭',
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="flower" size={28} color={color} />,
+          headerRight: () => (
+            <Pressable
+              onPress={() => {
+                openImagePickerAsync(navigation, "outfit")
               }}
               style={({ pressed }) => ({
                 opacity: pressed ? 0.5 : 1,

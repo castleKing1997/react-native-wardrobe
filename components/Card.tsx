@@ -1,5 +1,5 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import React from 'react';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import {
     Dimensions,
     View,
@@ -17,24 +17,37 @@ import { getTimer } from '../utils/TimeUtils';
 
 const { width, height } = Dimensions.get('window');
 
-export default function Card(props: { uri: string; onCardPress: ((event: GestureResponderEvent) => void) | null | undefined; onLeftBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onRightBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; onDeleteBtnPress: ((event: GestureResponderEvent) => void) | null | undefined; date: number }) {
+export default function Card(props: { choose: boolean; id: string; onChooseBtnPress: ((id: string, name: string) => void); name: string; type: string; uri: string; onCardPress: ((event: GestureResponderEvent) => void); onLeftBtnPress: ((event: GestureResponderEvent) => void); onRightBtnPress: ((event: GestureResponderEvent) => void); onDeleteBtnPress: ((event: GestureResponderEvent) => void); date: number }) {
+    const [choose, setChoose] = useState(props.choose);
     return (
         <View style={styles.cardContainer}>
             <ImageBackground source={{ uri: props.uri }} style={styles.cardBackGround} imageStyle={styles.cardBackGroundImage} resizeMode="cover" />
-            <Pressable style={styles.pressArea} onPress={props.onCardPress}>
-            </Pressable>
-            <Text style={[styles.text, { bottom: 47, right: 0 }]}>{getTimer(props.date, "刚刚穿过！")}</Text>
-            <Pressable style={[styles.smallBtn, { top: 0, right: 0 }]} onPress={props.onDeleteBtnPress}>
-                <MaterialCommunityIcons name="close" size={18} />
-            </Pressable>
-            <View style={styles.cardBottomBackground}>
-                <Pressable style={styles.cardBtn} onPress={props.onLeftBtnPress}>
-                    <Text style={styles.btnText}>今天穿</Text>
+            {props.type === "check" && <Pressable style={styles.pressArea} onPress={props.onCardPress}></Pressable>}
+            {props.type === "check" && <Text style={[styles.text, { bottom: 47, right: 0 }]}>{getTimer(props.date, "刚刚穿过！")}</Text>}
+            {props.type === "check" ?
+                <Pressable style={[styles.smallBtn, { top: 0, right: 0 }]} onPress={props.onDeleteBtnPress}>
+                    <MaterialCommunityIcons name="close" size={18} />
+                </Pressable> :
+                <Pressable style={[styles.smallBtn, { top: 0, right: 0 }]} onPress={() => { setChoose(!choose); props.onChooseBtnPress(props.id, props.name); }}>
+                    <MaterialIcons name={choose ? "radio-button-checked" : "radio-button-unchecked"} size={20} />
                 </Pressable>
-                <Pressable style={styles.cardBtn} onPress={props.onRightBtnPress}>
-                    <Text style={styles.btnText}>去搭配</Text>
-                </Pressable>
-            </View>
+            }
+            {props.type === "check" &&
+                <View style={styles.cardBottomBackground}>
+                    <Pressable style={styles.cardBtn} onPress={props.onLeftBtnPress}>
+                        <Text style={styles.btnText}>今天穿</Text>
+                    </Pressable>
+                    <Pressable style={styles.cardBtn} onPress={props.onRightBtnPress}>
+                        <Text style={styles.btnText}>去搭配</Text>
+                    </Pressable>
+                </View>
+            }
+            {props.type !== "check" &&
+                <View style={[styles.cardBottomBackground, { alignContent: 'center', alignItems: 'center', padding: 10 }]}>
+                    <Text style={[styles.btnText, { fontWeight: 'normal' }]}>{props.name}</Text>
+                </View>
+            }
+
         </View>
     );
 }
@@ -42,11 +55,16 @@ export default function Card(props: { uri: string; onCardPress: ((event: Gesture
 Card.defaultProps = {
     uri: 'https://reactnative.dev/img/tiny_logo.png',
     key: '0',
+    id: '0',
+    name: '我的小裙子',
     onLeftBtnPress: (e: any) => { console.log(e) },
     onRightBtnPress: (e: any) => { console.log(e) },
     onDeleteBtnPress: (e: any) => { console.log(e) },
     onCardPress: (e: any) => { console.log(e) },
+    onChooseBtnPress: (id: string, name: string) => { console.log(id, name) },
+    choose: false,
     date: 0,
+    type: "check",
 }
 
 const styles = StyleSheet.create({

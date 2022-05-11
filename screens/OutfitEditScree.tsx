@@ -37,10 +37,10 @@ const valueReducer = (state: any, action: any) => {
   }
 };
 
-export default function DressEditScreen(props: any) {
+export default function OutfitEditScreen(props: any) {
   const id = props.route.params.id;
   const type = props.route.params.type;
-  const key = "@DRESS_" + id;
+  const key = "@OUTFIT_" + id;
   const [value, dispatchValue] = useReducer(
     valueReducer,
     { data: null, isLoading: false, isError: false }
@@ -50,9 +50,9 @@ export default function DressEditScreen(props: any) {
     dispatchValue({ type: 'VALUE_FETCH_INIT' });
     try {
       const item = await Storage.getMyObject(key);
-      setDressName(item.name);
-      if (item.hasOwnProperty("buyDate")) {
-        setBuyDate(formatDate(new Date(item.buyDate).toLocaleDateString()));
+      setOutfitName(item.name);
+      if (item.hasOwnProperty("createDate")) {
+        setcreateDate(formatDate(new Date(item.createDate).toLocaleDateString()));
       }
       if (item.hasOwnProperty("date")) {
         setLatestDate(formatDate(new Date(item.date).toLocaleDateString()));
@@ -63,36 +63,54 @@ export default function DressEditScreen(props: any) {
         payload: item,
       });
     } catch (e) {
-      console.log("DressScreen.readItemFromStorage", e);
+      console.log("OutfitScreen.readItemFromStorage", e);
       dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
     }
   };
-  useEffect(() => { readItemFromStorage() }, [])
-  const [dressName, setDressName] = useState("");
-  const [buyDate, setBuyDate] = useState("");
+
+  useEffect(() => {
+    readItemFromStorage();
+    Storage.updateOutfitEdit = async () => {
+      dispatchValue({ type: 'VALUE_FETCH_INIT' });
+      try {
+        const item = await Storage.getMyObject(key);
+        dispatchValue({
+          type: 'VALUE_FETCH_SUCCESS',
+          payload: item,
+        });
+      } catch (e) {
+        console.log("OutfitScreen.readItemFromStorage", e);
+        dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
+      }
+    };
+  }, [])
+
+  const [outfitName, setOutfitName] = useState("");
+  const [createDate, setcreateDate] = useState("");
   const [latestDate, setLatestDate] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   const onSubmit = async () => {
-    const dressInfo = {
+    const outfitInfo = {
       id: id,
       uri: value.data?.uri,
-      name: dressName,
-      buyDate: new Date(buyDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
+      name: outfitName,
+      dressItems: value.data?.dressItems,
+      createDate: new Date(createDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
       date: new Date(latestDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
-      dressCount: 0,
+      outfitCount: 0,
     }
 
-    await Storage.setObjectValue("@DRESS_" + id, dressInfo);
+    await Storage.setObjectValue("@OUTFIT_" + id, outfitInfo);
     Storage.updateData();
-    props.navigation.navigate("Dress");
+    props.navigation.navigate("Outfit");
   };
 
   const onCancel = () => {
     if (type === "set") {
-      Storage.removeMyObject("@DRESS_" + id);
+      Storage.removeMyObject("@OUTFIT_" + id);
     }
-    props.navigation.navigate("Dress");
+    props.navigation.navigate("Outfit");
   };
 
   const [dateFor, setDateFor] = useState("");
@@ -100,24 +118,36 @@ export default function DressEditScreen(props: any) {
   const handleDatePicker = (date: string) => {
     if (dateFor === "latest") {
       setLatestDate(formatDate(date));
-    } else if (dateFor === "buy") {
-      setBuyDate(formatDate(date));
+    } else if (dateFor === "create") {
+      setcreateDate(formatDate(date));
     } else {
       console.error("日期赋值对象错误！");
     }
     setShowDatePicker(false);
   }
+
+
   return (
     <View style={styles.containerAll}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.topContainer}>
-          <ImageBackground style={styles.dressImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+          <ImageBackground style={styles.outfitImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
         </View>
         <View style={styles.container}>
+          <View style={styles.chooseContainer}>
+            {value.data?.dressItems.map((dress: any) => (
+              <Pressable key={dress[0]} style={[styles.dressBtn, { paddingTop: 3, backgroundColor: "#abc" }]}>
+                <Text style={styles.smallText}>{dress[1]}</Text>
+              </Pressable>
+            ))}
+            <Pressable style={[styles.dressBtn, { paddingTop: 3 }]} onPress={() => { props.navigation.navigate("DressChoose", { outfitId: id }) }}>
+              <Text style={styles.smallText}>添加单品</Text>
+            </Pressable>
+          </View>
           <TextInput
-            value={dressName || ""}
-            onChangeText={(x) => { setDressName(x) }}
-            placeholder={'给ta起个名儿……'}
+            value={outfitName || ""}
+            onChangeText={(x) => { setOutfitName(x) }}
+            placeholder={'给这个搭配起个名儿……'}
             style={styles.input}
           />
           <TextInput
@@ -125,15 +155,15 @@ export default function DressEditScreen(props: any) {
             onChangeText={(x) => { setLatestDate(x) }}
             onFocus={() => { setShowDatePicker(true); setDateFor("latest"); }}
             onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
-            placeholder={'最近一次穿ta……'}
+            placeholder={'最近一次这样穿……'}
             style={styles.input}
           />
           <TextInput
-            value={buyDate || ""}
-            onChangeText={(x) => { setBuyDate(x) }}
-            onFocus={() => { setShowDatePicker(true); setDateFor("buy"); }}
+            value={createDate || ""}
+            onChangeText={(x) => { setcreateDate(x) }}
+            onFocus={() => { setShowDatePicker(true); setDateFor("create"); }}
             onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
-            placeholder={'啥时候买的？（大概）'}
+            placeholder={'第一次这样搭配……'}
             style={styles.input}
           />
           <Pressable style={styles.submitBtn} onPress={onSubmit}>
@@ -175,7 +205,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     padding: 5,
   },
-  dressImage: {
+  outfitImage: {
     width: '100%',
     height: 250,
     marginBottom: 10,
@@ -201,6 +231,32 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     marginBottom: 10,
     fontSize: 20,
+  },
+  chooseContainer: {
+    width: '100%',
+    minHeight: 30,
+    paddingHorizontal: 4,
+    paddingTop: 4,
+    borderWidth: 1,
+    borderColor: '#000',
+    marginBottom: 10,
+    fontSize: 20,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  dressBtn: {
+    height: 30,
+    paddingHorizontal: 10,
+    marginHorizontal: 4,
+    marginBottom: 4,
+    backgroundColor: "#cab",
+    borderRadius: 15,
+    alignItems: 'center',
+    alignContent: 'center',
+    paddingTop: 3,
+  },
+  smallText: {
+    fontSize: 16,
   },
   submitBtn: {
     marginVertical: 5,
