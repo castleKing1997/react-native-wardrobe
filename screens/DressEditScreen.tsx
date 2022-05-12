@@ -63,7 +63,7 @@ export default function DressEditScreen(props: any) {
         payload: item,
       });
     } catch (e) {
-      console.log("DressScreen.readItemFromStorage", e);
+      console.log("DressEditScreen.readItemFromStorage", e);
       dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
     }
   };
@@ -80,7 +80,7 @@ export default function DressEditScreen(props: any) {
       name: dressName,
       buyDate: new Date(buyDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
       date: new Date(latestDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
-      dressCount: 0,
+      dressCount: value.data?.dressCount,
     }
 
     await Storage.setObjectValue("@DRESS_" + id, dressInfo);
@@ -107,6 +107,7 @@ export default function DressEditScreen(props: any) {
     }
     setShowDatePicker(false);
   }
+
   return (
     <View style={styles.containerAll}>
       <ScrollView style={styles.scrollView}>

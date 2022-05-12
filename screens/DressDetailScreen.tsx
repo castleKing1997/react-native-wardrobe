@@ -46,7 +46,7 @@ export default function DressDetailScreen(props: any) {
         payload: item,
       });
     } catch (e) {
-      console.log("DressScreen.readItemFromStorage", e);
+      console.log("DressDetailScreen.readItemFromStorage", e);
       dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
     }
   };
@@ -59,7 +59,7 @@ export default function DressDetailScreen(props: any) {
   } else {
     date = (new Date()).toLocaleDateString()
   }
-  console.log(value);
+
   return (
     <ScrollView style={styles.scrollView}>
       <View style={styles.topContainer}>

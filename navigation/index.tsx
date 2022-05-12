@@ -66,6 +66,7 @@ const openImagePickerAsync = async (navigation: any, type: string) => {
     const dressData = {
       id: id,
       uri: pickerResult.uri,
+      dressCount: 0,
     }
     await Storage.setObjectValue("@DRESS_" + id, dressData);
     navigation.navigate("DressEdit", { id: id, type: "set" });
@@ -74,6 +75,7 @@ const openImagePickerAsync = async (navigation: any, type: string) => {
       id: id,
       uri: pickerResult.uri,
       dressItems: [],
+      outfitCount: 0,
     }
     await Storage.setObjectValue("@OUTFIT_" + id, outfitData);
     navigation.navigate("OutfitEdit", { id: id, type: "set" });

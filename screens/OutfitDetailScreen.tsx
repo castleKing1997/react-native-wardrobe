@@ -75,7 +75,7 @@ export default function OutfitDetailScreen(props: any) {
       <View style={styles.container}>
         <Text style={styles.title}>{value.data ? (value.data.name ? value.data.name : "我的小套装") : "我的小套装"}</Text>
         <Text style={styles.text}>上次穿：{formatDate(date)}</Text>
-        <Text style={styles.text}>穿过：{value.data ? value.data.OutfitCount : 0}次</Text>
+        <Text style={styles.text}>穿过：{value.data ? value.data.outfitCount : 0}次</Text>
         <Text style={styles.text}>创建时间：{value.data ? getTimer(value.data.createDate, "刚刚创建！") : "刚刚入手！"}</Text>
       </View>
     </ScrollView>

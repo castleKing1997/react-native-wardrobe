@@ -98,7 +98,7 @@ export default function OutfitEditScreen(props: any) {
       dressItems: value.data?.dressItems,
       createDate: new Date(createDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
       date: new Date(latestDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
-      outfitCount: 0,
+      outfitCount: value.data?.outfitCount,
     }
 
     await Storage.setObjectValue("@OUTFIT_" + id, outfitInfo);
