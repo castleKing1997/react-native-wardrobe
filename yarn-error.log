@@ -1,5 +1,5 @@
 Arguments: 
-  F:\Program Files\nodejs\node.exe F:\app\nodejs\node_global\node_modules\yarn\bin\yarn.js add xcode-cli
+  F:\Program Files\nodejs\node.exe F:\app\nodejs\node_global\node_modules\yarn\bin\yarn.js add react-native-simple-dialogs
 
 PATH: 
   F:\Program Files (x86)\NetSarang\Xshell 6\;F:\Program Files\ImageMagick-7.0.11-Q16-HDRI;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\iCLS\;C:\Program Files\Intel\Intel(R) Management Engine Components\iCLS\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;F:\Python27;F:\Python27\Scripts;D:\MinGW\bin;C:\Program Files\Pandoc\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;D:\Program Files\Git\cmd;D:\Program Files (x86)\Graphviz2.38\bin;D:\users\20163\AppData\Local\Programs\Python\Python37\Lib\site-packages\selenium\webdriver\chrome;F:\Program Files\Java\jdk1.8.0_151\bin;D:\Program Files (x86)\Vim\vim74;C:\Program Files\MySQL\MySQL Server 8.0\bin;C:\Users\20163\Downloads\phantomjs-2.1.1-windows\phantomjs-2.1.1-windows\bin;E:\Program Files (x86)\ffmpeg-20190610-80e68ce-win64-static\bin;E:\bin;F:\Program Files\swigwin-4.0.2;F:\Program Files\chromedriver_win32;F:\Program Files\redis;F:\Program Files\nodejs\;F:\Program Files\Java\jdk1.8.0_151\bin;F:\Program Files\apache-maven-3.3.9\bin;F:\Program Files\apache-maven-3.3.9\bin;F:\Program Files\Tesseract-OCR;F:\Program Files\pdf2htmlEX-win32-0.14.6-with-poppler-data;F:\Program Files\bin;F:\Users\20163\anaconda3\condabin;F:\Users\20163\anaconda3\condabin;F:\app\nodejs\node_global;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;F:\Download\phantomjs-2.1.1-windows\phantomjs-2.1.1-windows\bin;F:\Program Files\nodejs;F:\Program Files\nodejs\node_global;C:\Users\20163\AppData\Local\Microsoft\WindowsApps;D:\Users\20163\AppData\Local\Programs\MiKTeX 2.9\miktex\bin\x64\;E:\Users\20163\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\20163\AppData\Local\GitHubDesktop\bin;;F:\Program Files\JetBrains\PyCharm 2020.3.4\bin;;F:\Program Files\JetBrains\PyCharm Professional Edition with Anaconda plugin 2019.3.5\bin;;C:\Users\20163\AppData\Roaming\npm;F:\Program Files\JetBrains\IntelliJ IDEA 2020.1\bin;
@@ -14,17 +14,8 @@ Platform:
   win32 x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/xcode-cli: Not found
-      at Request.params.callback [as _callback] (F:\app\nodejs\node_global\node_modules\yarn\lib\cli.js:66138:18)
-      at Request.self.callback (F:\app\nodejs\node_global\node_modules\yarn\lib\cli.js:140883:22)
-      at Request.emit (events.js:376:20)
-      at Request.<anonymous> (F:\app\nodejs\node_global\node_modules\yarn\lib\cli.js:141855:10)
-      at Request.emit (events.js:376:20)
-      at IncomingMessage.<anonymous> (F:\app\nodejs\node_global\node_modules\yarn\lib\cli.js:141777:12)
-      at Object.onceWrapper (events.js:482:28)
-      at IncomingMessage.emit (events.js:388:22)
-      at endReadableNT (internal/streams/readable.js:1336:12)
-      at processTicksAndRejections (internal/process/task_queues.js:82:21)
+  Error: connect ETIMEDOUT 104.16.19.35:443
+      at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1146:16)
 
 npm manifest: 
   {
@@ -43,23 +34,27 @@ npm manifest:
       "preset": "jest-expo"
     },
     "dependencies": {
-      "@expo/vector-icons": "^12.0.0",
+      "@expo/vector-icons": "12.0.0",
+      "@react-native-async-storage/async-storage": "~1.15.0",
       "@react-navigation/bottom-tabs": "^6.0.5",
       "@react-navigation/native": "^6.0.2",
       "@react-navigation/native-stack": "^6.1.0",
       "expo": "~44.0.0",
       "expo-asset": "~8.4.4",
-      "expo-camera": "~12.1.2",
       "expo-constants": "~13.0.0",
+      "expo-device": "~4.1.0",
       "expo-font": "~10.0.4",
       "expo-image-picker": "~12.0.1",
       "expo-linking": "~3.0.0",
       "expo-splash-screen": "~0.14.0",
       "expo-status-bar": "~1.2.0",
+      "expo-updates": "~0.11.7",
       "expo-web-browser": "~10.1.0",
+      "moment": "^2.29.3",
       "react": "17.0.1",
       "react-dom": "17.0.1",
       "react-native": "0.64.3",
+      "react-native-common-date-picker": "^2.3.7",
       "react-native-safe-area-context": "3.3.2",
       "react-native-screens": "~3.10.1",
       "react-native-web": "0.17.1"
@@ -72,6 +67,9 @@ npm manifest:
       "jest-expo": "~44.0.1",
       "react-test-renderer": "17.0.1",
       "typescript": "~4.3.5"
+    },
+    "resolutions": {
+      "@types/react": "~17.0.21"
     },
     "private": true
   }
@@ -1349,7 +1347,19 @@ Lockfile:
     dependencies:
       cross-spawn "^6.0.5"
   
-  "@expo/vector-icons@^12.0.0", "@expo/vector-icons@^12.0.4":
+  "@expo/vector-icons@12.0.0":
+    version "12.0.0"
+    resolved "https://registry.yarnpkg.com/@expo/vector-icons/-/vector-icons-12.0.0.tgz#200859ed32095847abd5cce8efe9aa1c7286f1f8"
+    integrity sha512-R8kVnAamF48bFEctgunkgYB4HImQ/wO2d0r23QgW3snSWe+gZmXukcvm45d8SRCvnMdRRXnZdTsYLYKSNrux4Q==
+    dependencies:
+      lodash.frompairs "^4.0.1"
+      lodash.isequal "^4.5.0"
+      lodash.isstring "^4.0.1"
+      lodash.omit "^4.5.0"
+      lodash.pick "^4.4.0"
+      lodash.template "^4.5.0"
+  
+  "@expo/vector-icons@^12.0.4":
     version "12.0.5"
     resolved "https://registry.yarnpkg.com/@expo/vector-icons/-/vector-icons-12.0.5.tgz#bc508ad05fb7e9a3e008704977cfec6c18aa7728"
     integrity sha512-zWvHBmkpbi1KrPma6Y+r/bsGI6MjbM1MBSe6W9A4uYMLhNI5NR4JtTnqxhf7g1XdpaDtBdv5aOWKEx4d5rxnhg==
@@ -1631,13 +1641,6 @@ Lockfile:
       "@jridgewell/resolve-uri" "^3.0.3"
       "@jridgewell/sourcemap-codec" "^1.4.10"
   
-  "@koale/useworker@^4.0.2":
-    version "4.0.2"
-    resolved "https://registry.yarnpkg.com/@koale/useworker/-/useworker-4.0.2.tgz#cb540a2581cd6025307c3ca6685bc60748773e58"
-    integrity sha512-xPIPADtom8/3/4FLNj7MvNcBM/Z2FleH85Fdx2O869eoKW8+PoEgtSVvoxWjCWMA46Sm9A5/R1TyzNGc+yM0wg==
-    dependencies:
-      dequal "^1.0.0"
-  
   "@nodelib/fs.scandir@2.1.5":
     version "2.1.5"
     resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -1658,6 +1661,13 @@ Lockfile:
     dependencies:
       "@nodelib/fs.scandir" "2.1.5"
       fastq "^1.6.0"
+  
+  "@react-native-async-storage/async-storage@~1.15.0":
+    version "1.15.17"
+    resolved "https://registry.yarnpkg.com/@react-native-async-storage/async-storage/-/async-storage-1.15.17.tgz#0dae263a52e476ffce871086f1fef5b8e44708eb"
+    integrity sha512-NQCFs47aFEch9kya/bqwdpvSdZaVRtzU7YB02L8VrmLSLpKgQH/1VwzFUBPcc1/JI1s3GU4yOLVrEbwxq+Fqcw==
+    dependencies:
+      merge-options "^3.0.4"
   
   "@react-native-community/cli-debugger-ui@^5.0.1":
     version "5.0.1"
@@ -1975,16 +1985,7 @@ Lockfile:
     dependencies:
       "@types/react" "*"
   
-  "@types/react@*":
-    version "18.0.8"
-    resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.8.tgz#a051eb380a9fbcaa404550543c58e1cf5ce4ab87"
-    integrity sha512-+j2hk9BzCOrrOSJASi5XiOyBbERk9jG5O73Ya4M0env5Ixi6vUNli4qy994AINcEF+1IEHISYFfIT4zwr++LKw==
-    dependencies:
-      "@types/prop-types" "*"
-      "@types/scheduler" "*"
-      csstype "^3.0.2"
-  
-  "@types/react@~17.0.21":
+  "@types/react@*", "@types/react@~17.0.21":
     version "17.0.44"
     resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.44.tgz#c3714bd34dd551ab20b8015d9d0dbec812a51ec7"
     integrity sha512-Ye0nlw09GeMp2Suh8qoOv0odfgCoowfM/9MG6WeRD60Gq9wS90bdkdRtYbRkNhXOpG4H+YXGvj4wOWhAC0LJ1g==
@@ -3092,11 +3093,6 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/depd/-/depd-2.0.0.tgz#b696163cc757560d09cf22cc8fad1571b79e76df"
     integrity sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==
   
-  dequal@^1.0.0:
-    version "1.0.1"
-    resolved "https://registry.yarnpkg.com/dequal/-/dequal-1.0.1.tgz#dbbf9795ec626e9da8bd68782f4add1d23700d8b"
-    integrity sha512-Fx8jxibzkJX2aJgyfSdLhr9tlRoTnHKrRJuu2XHlAgKioN2j19/Bcbe0d4mFXYZ3+wpE2KVobUVTfDutcD17xQ==
-  
   destroy@1.2.0:
     version "1.2.0"
     resolved "https://registry.yarnpkg.com/destroy/-/destroy-1.2.0.tgz#4803735509ad8be552934c67df614f94e66fa015"
@@ -3326,15 +3322,6 @@ Lockfile:
       path-browserify "^1.0.0"
       url-parse "^1.4.4"
   
-  expo-camera@~12.1.2:
-    version "12.1.2"
-    resolved "https://registry.yarnpkg.com/expo-camera/-/expo-camera-12.1.2.tgz#b549a8054ce5778fbf37a45b5d41003f36f5bb3c"
-    integrity sha512-Rr0Evj1V3LGiZE5/YBuuVimuU9uSTwVoqtSBsZ8QoK11+g9vnu2NgBjFMb938yjWD5tqJiXRH8lVTM2mvzSmIQ==
-    dependencies:
-      "@expo/config-plugins" "^4.0.2"
-      "@koale/useworker" "^4.0.2"
-      invariant "^2.2.4"
-  
   expo-constants@~13.0.0, expo-constants@~13.0.2:
     version "13.0.2"
     resolved "https://registry.yarnpkg.com/expo-constants/-/expo-constants-13.0.2.tgz#b489ecd575cc82a9a0b3dfbf2385d45a44300eb1"
@@ -3342,6 +3329,13 @@ Lockfile:
     dependencies:
       "@expo/config" "^6.0.6"
       uuid "^3.3.2"
+  
+  expo-device@~4.1.0:
+    version "4.1.1"
+    resolved "https://registry.yarnpkg.com/expo-device/-/expo-device-4.1.1.tgz#5de94144113ffb7fa0f37fa3d70e452113954c10"
+    integrity sha512-It0SGtKcvzQSf+Co6zdPdB63zZvG2/rDolB1lqswMNKj03Y7KVU41s5tcQCqNczj7tmeN3CJy7A8YhYGKdb7gA==
+    dependencies:
+      ua-parser-js "^0.7.19"
   
   expo-error-recovery@~3.0.5:
     version "3.0.5"
@@ -3371,6 +3365,11 @@ Lockfile:
       "@expo/config-plugins" "^4.0.2"
       uuid "7.0.2"
   
+  expo-json-utils@~0.2.0:
+    version "0.2.1"
+    resolved "https://registry.yarnpkg.com/expo-json-utils/-/expo-json-utils-0.2.1.tgz#a8d15181e361f3fc782d5241ce381851bab4465b"
+    integrity sha512-wU7gXGtaUlyxFLTp5e3PbnJB90/92r6gEc2BuMHdqE0OxhTQKyKzRszk2szCsdkeI7L4XntvZhCs1Px+gL1gvA==
+  
   expo-keep-awake@~10.0.2:
     version "10.0.2"
     resolved "https://registry.yarnpkg.com/expo-keep-awake/-/expo-keep-awake-10.0.2.tgz#706bda839782bb3e8ad4cbe43bde471a56368813"
@@ -3385,6 +3384,13 @@ Lockfile:
       invariant "^2.2.4"
       qs "^6.9.1"
       url-parse "^1.4.4"
+  
+  expo-manifests@~0.2.2:
+    version "0.2.4"
+    resolved "https://registry.yarnpkg.com/expo-manifests/-/expo-manifests-0.2.4.tgz#28aa7a0b21d8b932e1a49c836cfc31b5a9cd1f9c"
+    integrity sha512-8PrMPyvElKXflYd1ApDHJR9JF0SR996iVEVQgHAMLzVP7OqEAM6dQaFeqrRqVn/DSsxEWkJTpxv8WJ5NWrT4Lg==
+    dependencies:
+      expo-json-utils "~0.2.0"
   
   expo-modules-autolinking@0.5.5, expo-modules-autolinking@~0.5.1:
     version "0.5.5"
@@ -3417,6 +3423,31 @@ Lockfile:
     version "1.2.0"
     resolved "https://registry.yarnpkg.com/expo-status-bar/-/expo-status-bar-1.2.0.tgz#16e73205da563f9536f562e439081e30e318a82e"
     integrity sha512-pVZZ/kDCXFK79E4dCtRecs3XLC8aiwlciutSd/fFmUPJSQZ1Txia6hlKajPt0GAYft8/YnT0V3URXzWZOBniYQ==
+  
+  expo-structured-headers@~2.1.0:
+    version "2.1.1"
+    resolved "https://registry.yarnpkg.com/expo-structured-headers/-/expo-structured-headers-2.1.1.tgz#bdbf8752af36c7d3203540476af55562546b6aeb"
+    integrity sha512-0up4sfHHsiK2YLpTwD/ssUD2oeSGzVUeARnu/itKAJO4zHqjpc+m8N1s7HPSJcdC7fdDpMjzcdrDasT0o+cOAw==
+  
+  expo-updates-interface@~0.5.0:
+    version "0.5.1"
+    resolved "https://registry.yarnpkg.com/expo-updates-interface/-/expo-updates-interface-0.5.1.tgz#b390622f60b353bb352def895a32dc800a21a4dc"
+    integrity sha512-RLvC69o1BkhHP6hNaWiIvSiTgXABB9v4HnoietoXKFHlAyxlQCupy6ki164KpZNrOS/PFJ2WWqZOvKfiyDVO+w==
+  
+  expo-updates@~0.11.7:
+    version "0.11.7"
+    resolved "https://registry.yarnpkg.com/expo-updates/-/expo-updates-0.11.7.tgz#c267ce8818d42a997d49a1e24b11b4887a2fb17b"
+    integrity sha512-zmteCFOBj2OtDOZO5eGgFHR4EXZvFUv5DM56aMkZ6+PE/fo+8ZjNZLxkQWD33GXmXs/9jLCLKXPj2+6kCJvyhg==
+    dependencies:
+      "@expo/config" "^6.0.6"
+      "@expo/config-plugins" "^4.0.2"
+      "@expo/metro-config" "~0.2.6"
+      expo-manifests "~0.2.2"
+      expo-structured-headers "~2.1.0"
+      expo-updates-interface "~0.5.0"
+      fbemitter "^2.1.1"
+      resolve-from "^5.0.0"
+      uuid "^3.4.0"
   
   expo-web-browser@~10.1.0:
     version "10.1.1"
@@ -4165,6 +4196,11 @@ Lockfile:
     version "1.1.0"
     resolved "https://registry.yarnpkg.com/is-plain-obj/-/is-plain-obj-1.1.0.tgz#71a50c8429dfca773c92a390a4a03b39fcd51d3e"
     integrity sha1-caUMhCnfync8kqOQpKA7OfzVHT4=
+  
+  is-plain-obj@^2.1.0:
+    version "2.1.0"
+    resolved "https://registry.yarnpkg.com/is-plain-obj/-/is-plain-obj-2.1.0.tgz#45e42e37fccf1f40da8e5f76ee21515840c09287"
+    integrity sha512-YWnfyRwxL/+SsrWYfOpUtz5b3YD+nyfkHvjbcanzk8zgyO4ASD67uVMRt8k5bM4lLMDnXfriRhOpemw+NfT1eA==
   
   is-plain-object@^2.0.3, is-plain-object@^2.0.4:
     version "2.0.4"
@@ -5116,6 +5152,13 @@ Lockfile:
     dependencies:
       buffer-alloc "^1.1.0"
   
+  merge-options@^3.0.4:
+    version "3.0.4"
+    resolved "https://registry.yarnpkg.com/merge-options/-/merge-options-3.0.4.tgz#84709c2aa2a4b24c1981f66c179fe5565cc6dbb7"
+    integrity sha512-2Sug1+knBjkaMsMgf1ctR1Ujx+Ayku4EdJN4Z+C2+JzoeF7A3OZ9KM2GY0CpQS51NR61LTurMJrRKPhSs3ZRTQ==
+    dependencies:
+      is-plain-obj "^2.1.0"
+  
   merge-stream@^2.0.0:
     version "2.0.0"
     resolved "https://registry.yarnpkg.com/merge-stream/-/merge-stream-2.0.0.tgz#52823629a14dd00c9770fb6ad47dc6310f2c1f60"
@@ -5473,6 +5516,11 @@ Lockfile:
     integrity sha512-FP+p8RB8OWpF3YZBCrP5gtADmtXApB5AMLn+vdyA+PyxCjrCs00mjyUozssO33cwDeT3wNGdLxJ5M//YqtHAJw==
     dependencies:
       minimist "^1.2.6"
+  
+  moment@^2.29.3:
+    version "2.29.3"
+    resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.3.tgz#edd47411c322413999f7a5940d526de183c031f3"
+    integrity sha512-c6YRvhEo//6T2Jz/vVtYzqBzwvPT95JBQ+smCytzf7c50oMZRsR/a4w88aD34I+/QVSfnoAnSBFPJHItlOMJVw==
   
   ms@2.0.0:
     version "2.0.0"
@@ -6146,6 +6194,11 @@ Lockfile:
       flow-parser "^0.121.0"
       jscodeshift "^0.11.0"
       nullthrows "^1.1.1"
+  
+  react-native-common-date-picker@^2.3.7:
+    version "2.3.7"
+    resolved "https://registry.yarnpkg.com/react-native-common-date-picker/-/react-native-common-date-picker-2.3.7.tgz#c9fc6759a36e99e5ab230e9bd3171cad7472e4e3"
+    integrity sha512-XAell1MdBDjOkmHl6PxkNRstUvdrQmj36tu2zgTPR/EA3Db0Sr/LhwO+pdcA3XlJ7bPWt89tNantM16obzBz6Q==
   
   react-native-safe-area-context@3.3.2:
     version "3.3.2"
@@ -7209,7 +7262,7 @@ Lockfile:
     resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
     integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
   
-  ua-parser-js@^0.7.30:
+  ua-parser-js@^0.7.19, ua-parser-js@^0.7.30:
     version "0.7.31"
     resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.31.tgz#649a656b191dffab4f21d5e053e27ca17cbff5c6"
     integrity sha512-qLK/Xe9E2uzmYI3qLeOmI0tEOt+TBBQyUIAh4aAgU05FVYzeZrKUdkAZfBNVGRaHVgV0TDkdEngJSw/SyQchkQ==

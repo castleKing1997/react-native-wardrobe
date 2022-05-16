@@ -4,6 +4,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { View } from '../components/Themed';
 import Storage from '../manage/Storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 const getOutfitData = async () => {
   const items: any[] = []
@@ -57,6 +58,9 @@ export default function OutfitScreen(props: any) {
 
   const [ascending, setAscending] = useState(false);
   const [sortAtt, setSortAtt] = useState("date");
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [curId, setCurId] = useState("0");
+  const [curName, setCurName] = useState("我的小套装");
 
   const readItemsFromStorage = async () => {
     dispatchValues({ type: 'VALUES_FETCH_INIT' });
@@ -102,10 +106,22 @@ export default function OutfitScreen(props: any) {
     writeItemToStorage(item);
   }
 
-  const handleDeleteBtnPress = (id: string) => {
+  const handleDeleteBtnPress = (id: string, name: string) => {
+    setCurId(id);
+    setCurName(name);
+    setDialogVisible(true);
+  }
+
+  const handleDeleteConfirm = () => {
+    deleteItem(curId);
+    setDialogVisible(false);
+  }
+
+  const deleteItem = (id: string) => {
     const key = "@OUTFIT_" + id;
     removeItemFromStorage(key);
   }
+
 
   const handleCardPress = (id: string) => {
     props.navigation.navigate("OutfitDetail", { id: id });
@@ -130,10 +146,28 @@ export default function OutfitScreen(props: any) {
         </Pressable>
       </View>
       <View style={styles.container}>
-        {values.data.sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { uri: string; id: string; date: number; }) => (
-          <Card uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id)} onCardPress={() => handleCardPress(data.id)} date={data.date} />
+        {values.data.sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { uri: string; id: string; date: number; name: string; }) => (
+          <Card uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id, data.name)} onCardPress={() => handleCardPress(data.id)} date={data.date} />
         ))}
       </View>
+      <ConfirmDialog
+        title="确认删除"
+        message={"是否删除“" + (curName ? curName : "我的小套装") + "”？"}
+        visible={dialogVisible}
+        messageStyle={{}}
+        contentStyle={{}}
+        titleStyle={{}}
+        buttonsStyle={{}}
+        onTouchOutside={() => setDialogVisible(false)}
+        positiveButton={{
+          title: "否",
+          onPress: () => setDialogVisible(false)
+        }}
+        negativeButton={{
+          title: "是",
+          onPress: () => handleDeleteConfirm()
+        }}
+      />
       <View style={styles.bottomContainer}><Text>--到底啦--</Text></View>
     </ScrollView>
   );

@@ -37,7 +37,9 @@
     "react-native-common-date-picker": "^2.3.7",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
-    "react-native-web": "0.17.1"
+    "react-native-simple-dialogs": "^1.4.0",
+    "react-native-web": "0.17.1",
+    "react-style-proptype": "^3.2.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

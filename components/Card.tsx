@@ -118,9 +118,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     text: {
-        color: "#aaa",
+        color: "#234",
         fontSize: 16,
         margin: 2,
         position: 'absolute',
+        backgroundColor: "#dacdb777",
     }
 })
