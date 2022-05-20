@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Pressable, ImageBackground, View, Text, TextInp
 import Storage from '../manage/Storage';
 import { DatePicker } from "react-native-common-date-picker";
 import { formatDate } from '../utils/TimeUtils';
+import * as ImagePicker from 'expo-image-picker';
 
 const valueReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -82,7 +83,6 @@ export default function DressEditScreen(props: any) {
       date: new Date(latestDate.replace("年", "/").replace("月", "/").replace("日", "")).getTime(),
       dressCount: value.data?.dressCount,
     }
-
     await Storage.setObjectValue("@DRESS_" + id, dressInfo);
     Storage.updateData();
     props.navigation.navigate("Dress");
@@ -108,43 +108,74 @@ export default function DressEditScreen(props: any) {
     setShowDatePicker(false);
   }
 
+  const openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+    dispatchValue({ type: 'VALUE_FETCH_INIT' });
+    try {
+      dispatchValue({
+        type: 'VALUE_FETCH_SUCCESS',
+        payload: {
+          ...value.data,
+          uri: pickerResult.uri,
+        }
+      })
+    } catch (e) {
+      dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
+    }
+  };
+
+  const handleImagePress = () => {
+    openImagePickerAsync();
+  }
+
   return (
-    <View style={styles.containerAll}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.topContainer}>
-          <ImageBackground style={styles.dressImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
-        </View>
-        <View style={styles.container}>
-          <TextInput
-            value={dressName || ""}
-            onChangeText={(x) => { setDressName(x) }}
-            placeholder={'给ta起个名儿……'}
-            style={styles.input}
-          />
-          <TextInput
-            value={latestDate || ""}
-            onChangeText={(x) => { setLatestDate(x) }}
-            onFocus={() => { setShowDatePicker(true); setDateFor("latest"); }}
-            onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
-            placeholder={'最近一次穿ta……'}
-            style={styles.input}
-          />
-          <TextInput
-            value={buyDate || ""}
-            onChangeText={(x) => { setBuyDate(x) }}
-            onFocus={() => { setShowDatePicker(true); setDateFor("buy"); }}
-            onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
-            placeholder={'啥时候买的？（大概）'}
-            style={styles.input}
-          />
-          <Pressable style={styles.submitBtn} onPress={onSubmit}>
-            <Text style={{ fontSize: 16 }}>确认</Text>
-          </Pressable>
-          <Pressable style={styles.cancelBtn} onPress={onCancel}>
-            <Text style={{ fontSize: 16 }}>取消</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+    <>
+      <View style={styles.containerAll}>
+        <ScrollView style={styles.scrollView}>
+          <View style={styles.topContainer}>
+            <ImageBackground style={styles.dressImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+            <Pressable style={styles.pressArea} onPress={handleImagePress}></Pressable>
+          </View>
+          <View style={styles.container}>
+            <TextInput
+              value={dressName || ""}
+              onChangeText={(x) => { setDressName(x) }}
+              placeholder={'给ta起个名儿……'}
+              style={styles.input}
+            />
+            <TextInput
+              value={latestDate || ""}
+              onChangeText={(x) => { setLatestDate(x) }}
+              onFocus={() => { setShowDatePicker(true); setDateFor("latest"); }}
+              onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
+              placeholder={'最近一次穿ta……'}
+              style={styles.input}
+            />
+            <TextInput
+              value={buyDate || ""}
+              onChangeText={(x) => { setBuyDate(x) }}
+              onFocus={() => { setShowDatePicker(true); setDateFor("buy"); }}
+              onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
+              placeholder={'啥时候买的？（大概）'}
+              style={styles.input}
+            />
+            <Pressable style={styles.submitBtn} onPress={onSubmit}>
+              <Text style={{ fontSize: 16 }}>确认</Text>
+            </Pressable>
+            <Pressable style={styles.cancelBtn} onPress={onCancel}>
+              <Text style={{ fontSize: 16 }}>取消</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </View>
       {showDatePicker && (<DatePicker
         type="YYYY-MM-DD"
         toolBarPosition="bottom"
@@ -154,7 +185,7 @@ export default function DressEditScreen(props: any) {
         daySuffix={'日'}
         confirm={(date: string) => { handleDatePicker(date) }}
       />)}
-    </View>
+    </>
   );
 }
 
@@ -225,4 +256,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
   },
+  pressArea: {
+    width: '100%',
+    height: '100%',
+    color: '#f00',
+    position: 'absolute',
+  }
 });

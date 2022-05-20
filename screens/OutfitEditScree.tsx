@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Pressable, ImageBackground, View, Text, TextInp
 import Storage from '../manage/Storage';
 import { DatePicker } from "react-native-common-date-picker";
 import { formatDate } from '../utils/TimeUtils';
+import * as ImagePicker from 'expo-image-picker';
 
 const valueReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -126,12 +127,40 @@ export default function OutfitEditScreen(props: any) {
     setShowDatePicker(false);
   }
 
+  const openImagePickerAsync = async () => {
+    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permissionResult.granted === false) {
+      alert('Permission to access camera roll is required!');
+      return;
+    }
+    let pickerResult = await ImagePicker.launchImageLibraryAsync();
+    if (pickerResult.cancelled === true) {
+      return;
+    }
+    dispatchValue({ type: 'VALUE_FETCH_INIT' });
+    try {
+      dispatchValue({
+        type: 'VALUE_FETCH_SUCCESS',
+        payload: {
+          ...value.data,
+          uri: pickerResult.uri,
+        }
+      })
+    } catch (e) {
+      dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
+    }
+  };
+
+  const handleImagePress = () => {
+    openImagePickerAsync();
+  }
 
   return (
     <View style={styles.containerAll}>
       <ScrollView style={styles.scrollView}>
         <View style={styles.topContainer}>
           <ImageBackground style={styles.outfitImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+          <Pressable style={styles.pressArea} onPress={handleImagePress}></Pressable>
         </View>
         <View style={styles.container}>
           <View style={styles.chooseContainer}>
@@ -280,4 +309,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
   },
+  pressArea: {
+    width: '100%',
+    height: '100%',
+    color: '#f00',
+    position: 'absolute',
+  }
 });

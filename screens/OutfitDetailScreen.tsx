@@ -2,6 +2,7 @@ import { useEffect, useReducer, useState } from 'react';
 import { ScrollView, StyleSheet, Pressable, ImageBackground, View, Text } from 'react-native';
 import Storage from '../manage/Storage';
 import { formatDate, getTimer } from '../utils/TimeUtils';
+import { DatePicker } from "react-native-common-date-picker";
 
 const valueReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -36,7 +37,7 @@ export default function OutfitDetailScreen(props: any) {
     valueReducer,
     { data: null, isLoading: false, isError: false }
   );
-
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const readItemFromStorage = async () => {
     dispatchValue({ type: 'VALUE_FETCH_INIT' });
     try {
@@ -59,26 +60,61 @@ export default function OutfitDetailScreen(props: any) {
   } else {
     date = (new Date()).toLocaleDateString()
   }
+  const handleDatePicker = (date: string) => {
+    const timestamp = new Date(formatDate(date).replace("年", "/").replace("月", "/").replace("日", "")).getTime();
+    dispatchValue({ type: 'VALUE_FETCH_INIT' });
+    try {
+      dispatchValue({
+        type: 'VALUE_FETCH_SUCCESS',
+        payload: {
+          ...value.data,
+          outfitCount: value.data.outfitCount + 1,
+          date: timestamp > value.data.date ? timestamp : value.data.date,
+        }
+      })
+    } catch (e) {
+      dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
+    }
+    Storage.setObjectValue("@DRESS_" + value.data.id, value.data);
+    setShowDatePicker(false);
+  }
 
+  const handleBulu = () => {
+    setShowDatePicker(true);
+  }
   return (
-    <ScrollView style={styles.scrollView}>
-      <View style={styles.topContainer}>
-        <ImageBackground style={styles.OutfitImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
-      </View>
-      <View style={[styles.container, { flexDirection: "row", flexWrap: "wrap", }]}>
-        {value.data?.dressItems.map((dress: any) => (
-          <Pressable key={dress[0]} style={[styles.dressBtn, { paddingTop: 3 }]} onPress={() => { props.navigation.navigate("DressDetail", { id: dress[0] }) }}>
-            <Text style={styles.smallText}>{dress[1]}</Text>
-          </Pressable>
-        ))}
-      </View>
-      <View style={styles.container}>
-        <Text style={styles.title}>{value.data ? (value.data.name ? value.data.name : "我的小套装") : "我的小套装"}</Text>
-        <Text style={styles.text}>上次穿：{formatDate(date)}</Text>
-        <Text style={styles.text}>穿过：{value.data ? value.data.outfitCount : 0}次</Text>
-        <Text style={styles.text}>创建时间：{value.data ? getTimer(value.data.createDate, "刚刚创建！") : "刚刚入手！"}</Text>
-      </View>
-    </ScrollView>
+    <>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.topContainer}>
+          <ImageBackground style={styles.OutfitImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+        </View>
+        <View style={[styles.container, { flexDirection: "row", flexWrap: "wrap", }]}>
+          {value.data?.dressItems.map((dress: any) => (
+            <Pressable key={dress[0]} style={[styles.dressBtn, { paddingTop: 3 }]} onPress={() => { props.navigation.navigate("DressDetail", { id: dress[0] }) }}>
+              <Text style={styles.smallText}>{dress[1]}</Text>
+            </Pressable>
+          ))}
+        </View>
+        <View style={styles.container}>
+          <Text style={styles.title}>{value.data ? (value.data.name ? value.data.name : "我的小套装") : "我的小套装"}</Text>
+          <Text style={styles.text}>上次穿：{formatDate(date)}</Text>
+          <View style={styles.row}>
+            <Text style={styles.text}>穿过：{value.data ? value.data.outfitCount : 0}次</Text>
+            <Pressable style={styles.btnSmall} onPress={() => handleBulu()}><Text>次数补录</Text></Pressable>
+          </View>
+          <Text style={styles.text}>创建时间：{value.data ? getTimer(value.data.createDate, "刚刚创建！") : "刚刚入手！"}</Text>
+        </View>
+      </ScrollView>
+      {showDatePicker && (<DatePicker
+        type="YYYY-MM-DD"
+        toolBarPosition="bottom"
+        cancel={() => { setShowDatePicker(false) }}
+        yearSuffix={'年'}
+        monthSuffix={'月'}
+        daySuffix={'日'}
+        confirm={(date: string) => { handleDatePicker(date) }}
+      />)}
+    </>
   );
 }
 
@@ -127,5 +163,19 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 12,
+  },
+  btnSmall: {
+    marginTop: 7,
+    marginLeft: 10,
+    width: 70,
+    height: 25,
+    alignItems: 'center',
+    borderColor: '#000',
+    borderWidth: 2,
+  },
+  row: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignContent: 'center',
   },
 });

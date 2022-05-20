@@ -102,7 +102,7 @@ export default function OutfitScreen(props: any) {
 
   const handleLeftBtnPress = (item: any) => {
     item.date = new Date().getTime();
-    item.outfitCount += 1;
+    item.outfitCount = item.outfitCount === undefined ? 1 : item.outfitCount + 1;
     writeItemToStorage(item);
   }
 
