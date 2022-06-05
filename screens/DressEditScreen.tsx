@@ -138,44 +138,42 @@ export default function DressEditScreen(props: any) {
 
   return (
     <>
-      <View style={styles.containerAll}>
-        <ScrollView style={styles.scrollView}>
-          <View style={styles.topContainer}>
-            <ImageBackground style={styles.dressImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
-            <Pressable style={styles.pressArea} onPress={handleImagePress}></Pressable>
-          </View>
-          <View style={styles.container}>
-            <TextInput
-              value={dressName || ""}
-              onChangeText={(x) => { setDressName(x) }}
-              placeholder={'给ta起个名儿……'}
-              style={styles.input}
-            />
-            <TextInput
-              value={latestDate || ""}
-              onChangeText={(x) => { setLatestDate(x) }}
-              onFocus={() => { setShowDatePicker(true); setDateFor("latest"); }}
-              onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
-              placeholder={'最近一次穿ta……'}
-              style={styles.input}
-            />
-            <TextInput
-              value={buyDate || ""}
-              onChangeText={(x) => { setBuyDate(x) }}
-              onFocus={() => { setShowDatePicker(true); setDateFor("buy"); }}
-              onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
-              placeholder={'啥时候买的？（大概）'}
-              style={styles.input}
-            />
-            <Pressable style={styles.submitBtn} onPress={onSubmit}>
-              <Text style={{ fontSize: 16 }}>确认</Text>
-            </Pressable>
-            <Pressable style={styles.cancelBtn} onPress={onCancel}>
-              <Text style={{ fontSize: 16 }}>取消</Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </View>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.topContainer}>
+          <ImageBackground style={styles.dressImage} source={{ uri: value.data?.uri }} resizeMode="cover" />
+          <Pressable style={styles.pressArea} onPress={handleImagePress}></Pressable>
+        </View>
+        <View style={styles.container}>
+          <TextInput
+            value={dressName || ""}
+            onChangeText={(x) => { setDressName(x) }}
+            placeholder={'给ta起个名儿……'}
+            style={styles.input}
+          />
+          <TextInput
+            value={latestDate || ""}
+            onChangeText={(x) => { setLatestDate(x) }}
+            onFocus={() => { setShowDatePicker(true); setDateFor("latest"); }}
+            onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
+            placeholder={'最近一次穿ta……'}
+            style={styles.input}
+          />
+          <TextInput
+            value={buyDate || ""}
+            onChangeText={(x) => { setBuyDate(x) }}
+            onFocus={() => { setShowDatePicker(true); setDateFor("buy"); }}
+            onEndEditing={() => { setShowDatePicker(false); setDateFor(""); }}
+            placeholder={'啥时候买的？（大概）'}
+            style={styles.input}
+          />
+          <Pressable style={styles.submitBtn} onPress={onSubmit}>
+            <Text style={{ fontSize: 16 }}>确认</Text>
+          </Pressable>
+          <Pressable style={styles.cancelBtn} onPress={onCancel}>
+            <Text style={{ fontSize: 16 }}>取消</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
       {showDatePicker && (<DatePicker
         type="YYYY-MM-DD"
         toolBarPosition="bottom"

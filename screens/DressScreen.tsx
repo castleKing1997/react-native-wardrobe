@@ -102,7 +102,7 @@ export default function DressScreen(props: any) {
 
   const handleLeftBtnPress = (item: any) => {
     item.date = new Date().getTime();
-    item.dressCount += 1;
+    item.dressCount = item.dressCount === undefined ? 1 : item.dressCount + 1;
     writeItemToStorage(item);
   }
 
