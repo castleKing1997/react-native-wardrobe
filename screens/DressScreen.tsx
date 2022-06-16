@@ -3,7 +3,7 @@ import Card from '../components/Card';
 import React, { useEffect, useReducer, useState } from 'react';
 import { View } from '../components/Themed';
 import Storage from '../manage/Storage';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { ConfirmDialog } from 'react-native-simple-dialogs';
 
 const getDressData = async () => {
@@ -57,6 +57,7 @@ export default function DressScreen(props: any) {
   );
 
   const [ascending, setAscending] = useState(false);
+  const [visible, setVisible] = useState(true);
   const [sortAtt, setSortAtt] = useState("date");
   const [dialogVisible, setDialogVisible] = useState(false);
   const [curId, setCurId] = useState("0");
@@ -112,6 +113,11 @@ export default function DressScreen(props: any) {
     setDialogVisible(true);
   }
 
+  const handleVisibleBtnPress = (item: any) => {
+    item.isVisible = item.isVisible === undefined ? false : !item.isVisible;
+    writeItemToStorage(item);
+  }
+
   const handleDeleteConfirm = () => {
     deleteItem(curId);
     setDialogVisible(false);
@@ -126,6 +132,7 @@ export default function DressScreen(props: any) {
     props.navigation.navigate("DressDetail", { id: id });
   }
 
+
   const sortTypes = (a: any, b: any, sortAtt: string, ascending: boolean = false) => ascending ? b[sortAtt] - a[sortAtt] : a[sortAtt] - b[sortAtt]
 
   return (
@@ -134,19 +141,22 @@ export default function DressScreen(props: any) {
         <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "date" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("date") }}>
           <Text style={styles.smallText}>按使用时间</Text>
         </Pressable>
-        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "count" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("count") }}>
+        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "dressCount" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("dressCount") }}>
           <Text style={styles.smallText}>按使用次数</Text>
         </Pressable>
         <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "buyDate" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("buyDate") }}>
           <Text style={styles.smallText}>按购买时间</Text>
+        </Pressable>
+        <Pressable style={[styles.headerBtn, { right: 40, position: 'absolute', width: 24 }]} onPress={() => { setVisible(!visible) }}>
+          <MaterialIcons name={visible ? "visibility" : "visibility-off"} size={22} color="#aaa" />
         </Pressable>
         <Pressable style={[styles.headerBtn, { right: 8, position: 'absolute', width: 24 }]} onPress={() => { setAscending(!ascending) }}>
           <MaterialCommunityIcons name={ascending ? "arrow-up" : "arrow-down"} size={22} color="#aaa" />
         </Pressable>
       </View>
       <View style={styles.container}>
-        {values.data.sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { uri: string; id: string; date: number; name: string; }) => (
-          <Card uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id, data.name)} onCardPress={() => handleCardPress(data.id)} date={data.date} />
+        {values.data.filter((item: any) => item.isVisible === visible || visible && item.isVisible === undefined).sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { isVisible: boolean; uri: string; id: string; date: number; name: string; }) => (
+          <Card isVisible={data.isVisible === undefined ? true : data.isVisible} uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id, data.name)} onCardPress={() => handleCardPress(data.id)} date={data.date} onVisBtnPress={() => handleVisibleBtnPress(data)} />
         ))}
       </View>
       <ConfirmDialog

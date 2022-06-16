@@ -135,7 +135,7 @@ export default function OutfitScreen(props: any) {
         <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "date" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("date") }}>
           <Text style={styles.smallText}>按使用时间</Text>
         </Pressable>
-        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "count" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("count") }}>
+        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "outfitCount" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("outfitCount") }}>
           <Text style={styles.smallText}>按使用次数</Text>
         </Pressable>
         <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "createDate" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("createDate") }}>

@@ -197,7 +197,7 @@ export default function DressChooseScreen(props: any) {
         <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "date" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("date") }}>
           <Text style={styles.smallText}>按使用时间</Text>
         </Pressable>
-        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "count" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("count") }}>
+        <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "dressCount" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("dressCount") }}>
           <Text style={styles.smallText}>按使用次数</Text>
         </Pressable>
         <Pressable style={[styles.headerBtn, { left: 0, paddingTop: 3, backgroundColor: sortAtt === "buyDate" ? "#aaa" : "#fff" }]} onPress={() => { setSortAtt("buyDate") }}>
@@ -208,8 +208,8 @@ export default function DressChooseScreen(props: any) {
         </Pressable>
       </View>
       <View style={styles.container}>
-        {values.data.sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { uri: string; id: string; date: number; name: string; }) => (
-          <Card choose={outfitValue.data.dressItems.flat().includes(data.id)} type="choose" uri={data.uri} key={data.id} id={data.id} name={data.name} onChooseBtnPress={handleChooseBtnPress} date={data.date} />
+        {values.data.sort((a: any, b: any) => sortTypes(a, b, sortAtt, ascending)).map((data: { isVisible: boolean; uri: string; id: string; date: number; name: string; }) => (
+          <Card isVisible={data.isVisible === undefined ? true : data.isVisible} choose={outfitValue.data.dressItems.flat().includes(data.id)} type="choose" uri={data.uri} key={data.id} id={data.id} name={data.name} onChooseBtnPress={handleChooseBtnPress} date={data.date} onVisBtnPress={() => { }} />
         ))}
       </View>
       <View style={styles.bottomContainer}><Text>--到底啦--</Text></View>

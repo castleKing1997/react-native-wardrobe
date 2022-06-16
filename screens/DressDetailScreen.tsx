@@ -63,20 +63,19 @@ export default function DressDetailScreen(props: any) {
 
   const handleDatePicker = (date: string) => {
     const timestamp = new Date(formatDate(date).replace("年", "/").replace("月", "/").replace("日", "")).getTime();
+    let data = value.data;
+    data.dressCount = data.dressCount + 1;
+    data.date = timestamp > data.date ? timestamp : data.date;
     dispatchValue({ type: 'VALUE_FETCH_INIT' });
     try {
       dispatchValue({
         type: 'VALUE_FETCH_SUCCESS',
-        payload: {
-          ...value.data,
-          dressCount: value.data.dressCount + 1,
-          date: timestamp > value.data.date ? timestamp : value.data.date,
-        }
+        payload: data,
       })
     } catch (e) {
       dispatchValue({ type: 'VALUE_FETCH_FAILURE' })
     }
-    Storage.setObjectValue("@DRESS_" + value.data.id, value.data);
+    Storage.setObjectValue("@DRESS_" + data.id, data);
     setShowDatePicker(false);
   }
 

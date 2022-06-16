@@ -17,7 +17,7 @@ import { getTimer } from '../utils/TimeUtils';
 
 const { width, height } = Dimensions.get('window');
 
-export default function Card(props: { choose: boolean; id: string; onChooseBtnPress: ((id: string, name: string) => void); name: string; type: string; uri: string; onCardPress: ((event: GestureResponderEvent) => void); onLeftBtnPress: ((event: GestureResponderEvent) => void); onRightBtnPress: ((event: GestureResponderEvent) => void); onDeleteBtnPress: ((event: GestureResponderEvent) => void); date: number }) {
+export default function Card(props: { isVisible: boolean; choose: boolean; id: string; onChooseBtnPress: ((id: string, name: string) => void); name: string; type: string; uri: string; onCardPress: ((event: GestureResponderEvent) => void); onLeftBtnPress: ((event: GestureResponderEvent) => void); onRightBtnPress: ((event: GestureResponderEvent) => void); onDeleteBtnPress: ((event: GestureResponderEvent) => void); date: number; onVisBtnPress: ((event: GestureResponderEvent) => void); }) {
     const [choose, setChoose] = useState(props.choose);
     return (
         <View style={styles.cardContainer}>
@@ -25,9 +25,14 @@ export default function Card(props: { choose: boolean; id: string; onChooseBtnPr
             {props.type === "check" && <Pressable style={styles.pressArea} onPress={props.onCardPress}></Pressable>}
             {props.type === "check" && <Text style={[styles.text, { bottom: 47, right: 0 }]}>{getTimer(props.date, "刚刚穿过！")}</Text>}
             {props.type === "check" ?
-                <Pressable style={[styles.smallBtn, { top: 0, right: 0 }]} onPress={props.onDeleteBtnPress}>
-                    <MaterialCommunityIcons name="close" size={18} />
-                </Pressable> :
+                <>
+                    <Pressable style={[styles.smallBtn, { top: 0, right: 20 }]} onPress={props.onVisBtnPress}>
+                        <MaterialIcons name={props.isVisible ? "visibility" : "visibility-off"} size={18} color="black" />
+                    </Pressable>
+                    <Pressable style={[styles.smallBtn, { top: 0, right: 0 }]} onPress={props.onDeleteBtnPress}>
+                        <MaterialCommunityIcons name="close" size={18} />
+                    </Pressable></>
+                :
                 <Pressable style={[styles.smallBtn, { top: 0, right: 0 }]} onPress={() => { setChoose(!choose); props.onChooseBtnPress(props.id, props.name); }}>
                     <MaterialIcons name={choose ? "radio-button-checked" : "radio-button-unchecked"} size={20} />
                 </Pressable>
