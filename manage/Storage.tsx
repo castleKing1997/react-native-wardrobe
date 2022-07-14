@@ -3,7 +3,8 @@ import React from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Storage extends React.Component {
-  static updateData = async () => { console.log("updateData"); };
+  static updateDressData = async () => { console.log("updateDressData"); };
+  static updateOutfitData = async () => { console.log("updateOutfitData"); };
 
   static chooseDress = async () => { console.log("chooseDress"); };
 

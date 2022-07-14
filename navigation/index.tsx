@@ -23,6 +23,7 @@ import OutfitScreen from '../screens/OutfitScreen';
 import OutfitEditScreen from '../screens/OutfitEditScree';
 import OutfitDetailScreen from '../screens/OutfitDetailScreen';
 import DressChooseScreen from '../screens/DressChooseScreen';
+import UserScreen from '../screens/UserScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -235,6 +236,14 @@ function BottomTabNavigator() {
               />
             </Pressable>
           ),
+        })}
+      />
+      <BottomTab.Screen
+        name="User"
+        component={UserScreen}
+        options={({ navigation }: RootTabScreenProps<'User'>) => ({
+          title: '我',
+          tabBarIcon: ({ color }) => <MaterialCommunityIcons name="human" size={28} color={color} />,
         })}
       />
     </BottomTab.Navigator>

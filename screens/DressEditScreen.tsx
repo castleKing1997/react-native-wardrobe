@@ -84,7 +84,7 @@ export default function DressEditScreen(props: any) {
       dressCount: value.data?.dressCount,
     }
     await Storage.setObjectValue("@DRESS_" + id, dressInfo);
-    Storage.updateData();
+    Storage.updateDressData();
     props.navigation.navigate("Dress");
   };
 

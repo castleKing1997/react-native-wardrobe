@@ -24,6 +24,11 @@ const linking: LinkingOptions<RootStackParamList> = {
             screens: {
               OutfitScreen: 'outfit',
             }
+          },
+          User: {
+            screens: {
+              UserScreen: 'user',
+            }
           }
         },
       },

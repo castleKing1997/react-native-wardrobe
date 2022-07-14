@@ -4,7 +4,7 @@ import React, { useEffect, useReducer, useState } from 'react';
 import { View } from '../components/Themed';
 import Storage from '../manage/Storage';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ConfirmDialog } from 'react-native-simple-dialogs';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
 const getOutfitData = async () => {
   const items: any[] = []
@@ -97,7 +97,7 @@ export default function OutfitScreen(props: any) {
 
   useEffect(() => {
     readItemsFromStorage();
-    Storage.updateData = () => readItemsFromStorage();
+    Storage.updateOutfitData = () => readItemsFromStorage();
   }, []);
 
   const handleLeftBtnPress = (item: any) => {
@@ -150,22 +150,23 @@ export default function OutfitScreen(props: any) {
           <Card uri={data.uri} key={data.id} onLeftBtnPress={() => handleLeftBtnPress(data)} onDeleteBtnPress={() => handleDeleteBtnPress(data.id, data.name)} onCardPress={() => handleCardPress(data.id)} date={data.date} />
         ))}
       </View>
-      <ConfirmDialog
+      <AwesomeAlert
+        show={dialogVisible}
+        showProgress={false}
         title="确认删除"
         message={"是否删除“" + (curName ? curName : "我的小套装") + "”？"}
-        visible={dialogVisible}
-        messageStyle={{}}
-        contentStyle={{}}
-        titleStyle={{}}
-        buttonsStyle={{}}
-        onTouchOutside={() => setDialogVisible(false)}
-        positiveButton={{
-          title: "否",
-          onPress: () => setDialogVisible(false)
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelText="否"
+        confirmText="是"
+        confirmButtonColor="#DD6B55"
+        onCancelPressed={() => {
+          setDialogVisible(false);
         }}
-        negativeButton={{
-          title: "是",
-          onPress: () => handleDeleteConfirm()
+        onConfirmPressed={() => {
+          handleDeleteConfirm();
         }}
       />
       <View style={styles.bottomContainer}><Text>--到底啦--</Text></View>
