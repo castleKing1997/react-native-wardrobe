@@ -103,7 +103,7 @@ export default function OutfitEditScreen(props: any) {
     }
 
     await Storage.setObjectValue("@OUTFIT_" + id, outfitInfo);
-    Storage.updateData();
+    Storage.updateOutfitData();
     props.navigation.navigate("Outfit");
   };
 
