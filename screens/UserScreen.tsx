@@ -1,97 +1,77 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Pressable, TextInput } from 'react-native';
 import axios from 'axios'
 import { Text, View } from '../components/Themed';
-import { clearDressData, clearOutfitData, getDressData } from '../utils/DataUtils';
+import { clearAllData, clearDressData, clearOutfitData, getAllDataAndKeys, getDressData } from '../utils/DataUtils';
+import AWS, { S3 } from "aws-sdk";
+import Storage from '../manage/Storage';
+import AwesomeAlert from 'react-native-awesome-alerts';
 
-const serverAddress = "https://3405y5z372.goho.co/";
-var Minio = require('minio')
-
-var minioClient = new Minio.Client({
-  endPoint: 'https://3405y5z372.goho.co/',
-  port: 443,
-  useSSL: true,
-  accessKey: '3BSRkoFduBJpsCrt',
-  secretKey: '0RUlfQ5zn8yxBtB1KBkULF4wjISznwud'
-});
-
-var metaData = {
-  'Content-Type': 'application/octet-stream',
-  'X-Amz-Meta-Testing': 1234,
-  'example': 5678
-}
 
 export default function UserScreen(props: any) {
   const [userName, setUserName] = useState("");
-  const [passwd, setPasswd] = useState("");
   const [error, setError] = useState(false);
+  const [minioClient, setMinioClient] = useState<null | S3>(null);
+  const [dialogVisible, setDialogVisible] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("上传");
 
-  const verifyUserInfo = () => {
-    const url = serverAddress + "/user/query?userName=" + userName;
-    axios
-      .get(url)
-      .then(result => {
-        const data = result.data.data;
-        const passwd_ = data.passwd;
-        if (passwd_ === passwd) {
-          setError(false);
-        } else {
-          setError(true);
-        }
-      })
-      .catch(() => {
-        setError(true);
-      })
-  }
-  const download = async () => {
-    clearDressData();
-    clearOutfitData();
-  }
+  useEffect(() => {
+    const connectMinio = async () => {
+      // create the client
+      var s3 = new AWS.S3({
+        accessKeyId: "3BSRkoFduBJpsCrt",
+        secretAccessKey: "0RUlfQ5zn8yxBtB1KBkULF4wjISznwud",
+        endpoint: "https://3405y5z372.goho.co",
+        s3ForcePathStyle: true,
+        signatureVersion: "v4"
+      });
+      setMinioClient(s3);
+    };
+    connectMinio();
+  }, []);
 
   const upload = async () => {
-    const url = serverAddress + "/user/query?userName=" + userName;
-    let flag = false;
-    axios
-      .get(url)
-      .then(async result => {
-        const data = result.data.data;
-        const passwd_ = data.passwd;
-        const userId_ = data.id;
-        if (passwd_ === passwd) {
-          setError(false);
-          const items = await getDressData();
-          doUpload(items, userId_);
-        } else {
-          setError(true);
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-        setError(true);
-      })
+    const items = await getAllDataAndKeys();
+    doUpload(items, userName);
   }
 
-  const doUpload = (items: any, userId: any) => {
-    const url = serverAddress + "/dress/create"
-    items.forEach((element: any) => {
-      console.log(element);
-      // minioClient.fPutObject('dress-online', 'photos-europe.tar', element.uri, metaData, function (err: any, etag: any) {
-      //   if (err) return console.log(err)
-      //   console.log('File uploaded successfully.')
-      // });
-      axios
-        .post(url, {
-          "buydate": element.buyDate,
-          "date": element.date,
-          "dresscount": element.dressCount,
-          "dressid": element.id,
-          "name": element.name,
-          "uri": element.uri,
-          "userid": userId
+  const download = async () => {
+    // clearAllData();
+    doDownload(userName);
+  }
+
+  const doDownload = (key: any) => {
+    const params = {
+      Bucket: "dress-online",
+      Key: key
+    };
+    minioClient?.getObject(params, async function (err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else {
+        const data_ = eval("(" + data.Body?.toString() + ")");
+        data_?.forEach(async (element: any) => {
+          try {
+            await Storage.setObjectValue(element[0], JSON.parse(element[1]));
+          } catch {
+            await Storage.setObjectValue(element[0], element[1]);
+          }
         })
-        .catch((e) => {
-          console.log(e);
-        })
+      }
+      Storage.updateDressData();
+      Storage.updateOutfitData();
+    });
+  }
+
+  const doUpload = (items: any, key: any) => {
+    const data = JSON.stringify(items);
+    const params = {
+      Body: data,
+      Bucket: "dress-online",
+      Key: key
+    };
+    minioClient?.putObject(params, function (err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else console.log(data);           // successful response
     });
   }
 
@@ -103,20 +83,38 @@ export default function UserScreen(props: any) {
         placeholder={'用户名'}
         style={styles.input}
       />
-      <TextInput
-        value={passwd || ""}
-        onChangeText={(x) => { setPasswd(x) }}
-        placeholder={'密码'}
-        style={styles.input}
-        secureTextEntry={true}
-      />
-      <Pressable style={styles.submitBtn} onPress={upload}>
+      <Pressable style={styles.submitBtn} onPress={() => { setDialogTitle("上传"); setDialogVisible(true); }}>
         <Text style={{ fontSize: 16 }}>上传数据</Text>
       </Pressable>
-      <Pressable style={styles.submitBtn} onPress={download}>
+      <Pressable style={styles.submitBtn} onPress={() => { setDialogTitle("下载"); setDialogVisible(true); }}>
         <Text style={{ fontSize: 16 }}>下载数据</Text>
       </Pressable>
       {error && <Text style={{ color: 'red' }}>用户名或密码错误</Text>}
+      <AwesomeAlert
+        show={dialogVisible}
+        showProgress={false}
+        title={"确认" + dialogTitle}
+        message={"是否“" + dialogTitle + "”？"}
+        closeOnTouchOutside={false}
+        closeOnHardwareBackPress={false}
+        showCancelButton={true}
+        showConfirmButton={true}
+        cancelText="否"
+        confirmText="是"
+        confirmButtonColor="#DD6B55"
+        onCancelPressed={() => {
+          setDialogVisible(false);
+        }}
+        onConfirmPressed={() => {
+          if (dialogTitle === "上传") {
+            upload();
+            setDialogVisible(false);
+          } else if (dialogTitle === "下载") {
+            download();
+            setDialogVisible(false);
+          }
+        }}
+      />
     </View>
   );
 }

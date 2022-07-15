@@ -17,6 +17,24 @@ export async function getDressData() {
   return items;
 };
 
+export async function getAllDataAndKeys() {
+  const keys = await Storage.getAllKeys();
+  const data = await Storage.getMultiple(keys);
+  return data;
+};
+
+export async function clearAllData() {
+  try {
+    const keys = await Storage.getAllKeys();
+    keys?.forEach(element => {
+      Storage.removeMyObject(element);
+    });
+    Storage.updateDressData();
+  } catch (e) {
+    console.log("clearDressData", e);
+  }
+}
+
 export async function clearDressData() {
   try {
     const keys = await Storage.getAllKeys();

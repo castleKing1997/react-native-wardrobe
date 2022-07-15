@@ -24,6 +24,7 @@ import OutfitEditScreen from '../screens/OutfitEditScree';
 import OutfitDetailScreen from '../screens/OutfitDetailScreen';
 import DressChooseScreen from '../screens/DressChooseScreen';
 import UserScreen from '../screens/UserScreen';
+import * as FileSystem from 'expo-file-system';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -58,15 +59,22 @@ const openImagePickerAsync = async (navigation: any, type: string) => {
     alert('Permission to access camera roll is required!');
     return;
   }
-  let pickerResult = await ImagePicker.launchImageLibraryAsync();
+  let pickerResult = await ImagePicker.launchImageLibraryAsync({ base64: true });
   if (pickerResult.cancelled === true) {
     return;
   }
   const id = getUUid();
+  let uri = pickerResult.uri;
+  if (!uri.match("base64")) {
+    const fsRead = await FileSystem.readAsStringAsync(pickerResult.uri, {
+      encoding: "base64",
+    });
+    uri = `data:image/png;base64,${fsRead}`;
+  }
   if (type === "dress") {
     const dressData = {
       id: id,
-      uri: pickerResult.uri,
+      uri: uri,
       dressCount: 0,
     }
     await Storage.setObjectValue("@DRESS_" + id, dressData);
@@ -74,7 +82,7 @@ const openImagePickerAsync = async (navigation: any, type: string) => {
   } else if (type == "outfit") {
     const outfitData = {
       id: id,
-      uri: pickerResult.uri,
+      uri: uri,
       dressItems: [],
       outfitCount: 0,
     }

@@ -182,7 +182,6 @@ export default function DressScreen(props: any) {
     </ScrollView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
