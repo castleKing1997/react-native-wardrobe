@@ -4,6 +4,7 @@ import Storage from '../manage/Storage';
 import { DatePicker } from "react-native-common-date-picker";
 import { formatDate } from '../utils/TimeUtils';
 import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
 
 const valueReducer = (state: any, action: any) => {
   switch (action.type) {
@@ -58,7 +59,6 @@ export default function DressEditScreen(props: any) {
       if (item.hasOwnProperty("date")) {
         setLatestDate(formatDate(new Date(item.date).toLocaleDateString()));
       }
-
       dispatchValue({
         type: 'VALUE_FETCH_SUCCESS',
         payload: item,

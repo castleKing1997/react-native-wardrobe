@@ -8,7 +8,24 @@ export async function getDressData() {
     const dressData = await Storage.getMultiple(matchedKey);
     dressData?.forEach(element => {
       if (element[1]) {
-        items.push(JSON.parse(element[1]));
+        items.push([element[0], JSON.parse(element[1])]);
+      }
+    });
+  } catch (e) {
+    console.log("DressSceen.getDressData", e);
+  }
+  return items;
+};
+
+export async function getOutfitData() {
+  const items: any[] = []
+  try {
+    const keys = await Storage.getAllKeys();
+    const matchedKey = Storage.matchKey(keys, "@OUTFIT_*");
+    const dressData = await Storage.getMultiple(matchedKey);
+    dressData?.forEach(element => {
+      if (element[1]) {
+        items.push([element[0], JSON.parse(element[1])]);
       }
     });
   } catch (e) {
