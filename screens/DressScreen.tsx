@@ -120,7 +120,6 @@ export default function DressScreen(props: any) {
 
   const handleDeleteConfirm = () => {
     deleteItem(curId);
-    setDialogVisible(false);
   }
 
   const deleteItem = (id: string) => {
@@ -164,7 +163,7 @@ export default function DressScreen(props: any) {
         showProgress={false}
         title="确认删除"
         message={"是否删除“" + (curName ? curName : "我的小裙子") + "”？"}
-        closeOnTouchOutside={false}
+        closeOnTouchOutside={true}
         closeOnHardwareBackPress={false}
         showCancelButton={true}
         showConfirmButton={true}
@@ -175,6 +174,7 @@ export default function DressScreen(props: any) {
           setDialogVisible(false);
         }}
         onConfirmPressed={() => {
+          setDialogVisible(false);
           handleDeleteConfirm();
         }}
       />

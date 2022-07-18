@@ -24,7 +24,6 @@ import OutfitEditScreen from '../screens/OutfitEditScree';
 import OutfitDetailScreen from '../screens/OutfitDetailScreen';
 import DressChooseScreen from '../screens/DressChooseScreen';
 import UserScreen from '../screens/UserScreen';
-import * as FileSystem from 'expo-file-system';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -65,12 +64,6 @@ const openImagePickerAsync = async (navigation: any, type: string) => {
   }
   const id = getUUid();
   let uri = pickerResult.uri;
-  if (!uri.match("base64")) {
-    const fsRead = await FileSystem.readAsStringAsync(pickerResult.uri, {
-      encoding: "base64",
-    });
-    uri = `data:image/png;base64,${fsRead}`;
-  }
   if (type === "dress") {
     const dressData = {
       id: id,
