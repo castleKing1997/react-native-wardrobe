@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet, Pressable, TextInput } from 'react-native';
-import axios from 'axios'
 import { Text, View } from '../components/Themed';
-import { clearAllData, clearDressData, clearOutfitData, getAllDataAndKeys, getDressData, getOutfitData } from '../utils/DataUtils';
+import { getAllDataAndKeys } from '../utils/DataUtils';
 import AWS, { S3 } from "aws-sdk";
 import Storage from '../manage/Storage';
 import AwesomeAlert from 'react-native-awesome-alerts';
@@ -18,6 +17,7 @@ export default function UserScreen(props: any) {
   const [dialogTitle, setDialogTitle] = useState("上传");
   const [state, setState] = useState("空闲");
   const [stateMsg, setStageMsg] = useState("");
+  const [keysToRemove, setKeysToRemove] = useState<string[]>([]);
 
   const connectMinio = async () => {
     // create the client
@@ -73,13 +73,15 @@ export default function UserScreen(props: any) {
         setError(true);
         flag = false;
       } else {
-        await clearAllData();
+        setKeysToRemove(await Storage.getAllKeys());
         setStageMsg("【解码键文件】")
         const data_ = eval("(" + data.Body?.toString() + ")");
         if (data_.length === 0) {
           setStageMsg("【下载完成】");
           setState("下载完成");
           setError(false);
+          setDialogTitle("覆盖数据");
+          setDialogVisible(true);
           Storage.updateDressData();
           Storage.updateOutfitData();
         }
@@ -89,6 +91,7 @@ export default function UserScreen(props: any) {
             break;
           }
           const key = data_[index];
+          setKeysToRemove(keysToRemove.filter(x => x !== key));
           const params = {
             Bucket: "dress-online",
             Key: key
@@ -121,6 +124,8 @@ export default function UserScreen(props: any) {
                   setStageMsg("【下载完成】");
                   setState("下载完成");
                   setError(false);
+                  setDialogTitle("覆盖数据");
+                  setDialogVisible(true);
                   Storage.updateDressData();
                   Storage.updateOutfitData();
                 }
@@ -131,6 +136,8 @@ export default function UserScreen(props: any) {
                   setStageMsg("【下载完成】");
                   setState("下载完成");
                   setError(false);
+                  setDialogTitle("覆盖数据");
+                  setDialogVisible(true);
                   Storage.updateDressData();
                   Storage.updateOutfitData();
                 }
@@ -209,6 +216,20 @@ export default function UserScreen(props: any) {
     }
   }
 
+  const deleteKeys = async () => {
+    setDialogVisible(false);
+    setState("覆盖数据")
+    setStageMsg("【删除数据】");
+    for (let index = 0; index < keysToRemove.length; index++) {
+      const element = keysToRemove[index];
+      setStageMsg("【删除数据】删除" + element);
+      await Storage.removeMyObject(element);
+    }
+    setState("完成覆盖")
+    Storage.updateDressData();
+    Storage.updateOutfitData();
+  }
+
   return (
     <View style={styles.container}>
       <Text style={{ color: 'green', fontSize: 18, marginBottom: 10 }}>{state}</Text>
@@ -252,6 +273,8 @@ export default function UserScreen(props: any) {
             upload();
           } else if (dialogTitle === "下载") {
             download();
+          } else if (dialogTitle === "覆盖数据") {
+            deleteKeys();
           }
         }}
       />
